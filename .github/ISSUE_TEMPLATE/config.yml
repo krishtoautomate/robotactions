@@ -1,0 +1,15 @@
+# Disables GitHub's default "Open a blank issue" link so submissions always
+# start from one of the three templates. The contact_links replace blank
+# issues with explicit "go elsewhere" routes for the things that don't
+# belong on a public tracker.
+blank_issues_enabled: false
+contact_links:
+  - name: 📨 Account / billing / enterprise (private)
+    url: mailto:hello@robotactions.com
+    about: Anything that would expose your account email, device IDs, or session data publicly — use email instead.
+  - name: 🔒 Security disclosure (private)
+    url: https://github.com/krishtoautomate/robotactions/blob/main/SECURITY.md
+    about: Don't file security issues publicly. Read SECURITY.md for the responsible-disclosure process.
+  - name: 💬 Product documentation
+    url: https://robotactions.com
+    about: Pricing, features, signup, and product docs live on the marketing site.
