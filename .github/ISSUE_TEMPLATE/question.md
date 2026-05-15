@@ -19,4 +19,4 @@ labels: question
 
 ---
 
-For **account-specific** questions (billing, credentials, dedicated deployments), email hello@robotactions.com instead — those don't belong in a public tracker.
+For **account-specific** questions (billing, credentials, dedicated deployments), email support@robotactions.com instead — those don't belong in a public tracker.

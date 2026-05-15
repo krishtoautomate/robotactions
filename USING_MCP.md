@@ -123,4 +123,4 @@ If you suspect a token was compromised, revoke it immediately and email **securi
 | "403 Forbidden" on device commands | Device locked by another user in your tenant — check the web UI for who has it |
 | Tool calls time out | Device unresponsive (sleep, USB re-enum) — try waking it via the web UI first |
 
-For anything else, file an issue on the [Issues tab](../../issues) or email hello@robotactions.com.
+For anything else, file an issue on the [Issues tab](../../issues) or email support@robotactions.com.

@@ -5,7 +5,7 @@
 blank_issues_enabled: false
 contact_links:
   - name: 📨 Account / billing / enterprise (private)
-    url: mailto:hello@robotactions.com
+    url: mailto:support@robotactions.com
     about: Anything that would expose your account email, device IDs, or session data publicly — use email instead.
   - name: 🔒 Security disclosure (private)
     url: https://github.com/krishtoautomate/robotactions/blob/main/SECURITY.md

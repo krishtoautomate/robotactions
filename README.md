@@ -4,7 +4,7 @@
 
 🔗 **Product**: <https://robotactions.com>
 📋 **Pricing & tiers**: <https://robotactions.com/pricing>
-📨 **Sales & enterprise**: hello@robotactions.com
+📨 **Sales & enterprise**: support@robotactions.com
 🤖 **Drive Robot Actions from an AI agent**: [USING_MCP.md](USING_MCP.md) — Claude Desktop, Cursor, Windsurf, Claude Code, and any other MCP-compatible client
 
 ---
@@ -20,7 +20,7 @@ This repo contains **no application source code** — Robot Actions is a hosted 
 
 ## When to file an Issue here vs. when to email us
 
-| Filing here | Email us at hello@robotactions.com |
+| Filing here | Email us at support@robotactions.com |
 |---|---|
 | Bug reproductions, feature requests, public questions | Account-specific issues (billing, credentials, dedicated deployments) |
 | "Does Robot Actions support X?" | Anything that would expose your account email, device IDs, or session data publicly |
