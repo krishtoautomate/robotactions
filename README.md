@@ -5,6 +5,7 @@
 🔗 **Product**: <https://robotactions.com>
 📋 **Pricing & tiers**: <https://robotactions.com/pricing>
 📨 **Sales & enterprise**: hello@robotactions.com
+🤖 **Drive Robot Actions from an AI agent**: [USING_MCP.md](USING_MCP.md) — Claude Desktop, Cursor, Windsurf, Claude Code, and any other MCP-compatible client
 
 ---
 
