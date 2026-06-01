@@ -1,0 +1,65 @@
+{
+    "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+    "name": "io.github.krishtoautomate/remote-device-server",
+    "title": "Robot Actions — Remote Device Control",
+    "description": "Drive real Android & iOS devices and web browsers from natural language for mobile + web QA.",
+    "version": "0.8.3",
+    "repository": {
+        "url": "https://github.com/krishtoautomate/robotactions",
+        "source": "github"
+    },
+    "remotes": [
+        {
+            "type": "sse",
+            "url": "https://{tenant}.robotactions.com/mcp/sse",
+            "variables": {
+                "tenant": {
+                    "description": "Your Robot Actions tenant subdomain. Leave as 'test' to use the shared free tenant. Paid customers get a dedicated subdomain (e.g. 'acme' if your portal is at https://acme.robotactions.com).",
+                    "default": "test",
+                    "isRequired": true
+                }
+            },
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "description": "Bearer <API token from your Robot Actions account → Profile → API Tokens>",
+                    "isSecret": true,
+                    "isRequired": true
+                }
+            ]
+        },
+        {
+            "type": "streamable-http",
+            "url": "https://{tenant}.robotactions.com/mcp",
+            "variables": {
+                "tenant": {
+                    "description": "Your Robot Actions tenant subdomain. Leave as 'test' to use the shared free tenant. Paid customers get a dedicated subdomain (e.g. 'acme' if your portal is at https://acme.robotactions.com).",
+                    "default": "test",
+                    "isRequired": true
+                }
+            },
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "description": "Bearer <API token from your Robot Actions account → Profile → API Tokens>",
+                    "isSecret": true,
+                    "isRequired": true
+                }
+            ]
+        }
+    ],
+    "icon": "https://www.robotactions.com/images/logo/robot-actions-icon-dark-green-rgb.svg",
+    "categories": ["mobile", "testing", "browser-automation", "qa"],
+    "tags": [
+        "android",
+        "ios",
+        "device-control",
+        "web-automation",
+        "mobile-testing",
+        "test-automation",
+        "screen-recording",
+        "flow-recording"
+    ],
+    "homepage": "https://www.robotactions.com",
+    "documentation": "https://github.com/krishtoautomate/RemoteDeviceServer/blob/develop/docs/MCP.md"
+}
