@@ -7,6 +7,20 @@
 📨 **Sales & enterprise**: support@robotactions.com
 🤖 **Drive Robot Actions from an AI agent**: [USING_MCP.md](USING_MCP.md) — Claude Desktop, Cursor, Windsurf, Claude Code, and any other MCP-compatible client
 
+<!-- mcp-name: io.github.krishtoautomate/remote-device-server -->
+
+---
+
+## Robot Actions on the MCP Registry
+
+The hosted MCP server is published at <https://registry.modelcontextprotocol.io> as `io.github.krishtoautomate/remote-device-server` and auto-syncs to:
+
+- **GitHub MCP Registry** (`github.com/mcp`) — shows up in VS Code under `@mcp`
+- **Smithery** (`smithery.ai`) — install via the toolbox button
+- **glama.ai/mcp** — community aggregator
+
+Manifest source: [`server.json`](server.json) in this repo mirrors the published version.
+
 ---
 
 ## What this repo is for
