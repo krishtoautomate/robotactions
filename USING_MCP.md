@@ -48,9 +48,40 @@ The MCP endpoint requires a **Bearer token**. Generate one from your Robot Actio
 
 ## 3. Configuration snippets
 
-### Claude Desktop / Cursor
+> Each MCP host expects a slightly different config shape. The `npx @robotactions/mcp init` command from §0 handles all of this automatically — these snippets are for hand-editing.
 
-Add to `~/Library/Application Support/Claude/claude_desktop_config.json` (Claude Desktop) or `.cursor/mcp.json` in your project (Cursor):
+### Claude Desktop / Cline / Goose (stdio bridge required)
+
+These hosts only accept stdio transport. Use the `mcp-remote` bridge (spawned via `npx`) to wrap the SSE endpoint. Anything else (URL + headers shape) is rejected as "not valid MCP server configurations".
+
+Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "robot-actions": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://<your-subdomain>.robotactions.com/mcp/sse",
+        "--header",
+        "Authorization: Bearer <your-api-token>"
+      ]
+    }
+  }
+}
+```
+
+Same shape works for:
+- **Cline** — `~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json` (macOS) / equivalent on other OSes
+- **Goose** — `~/Library/Application Support/Block/goose/config.yaml` (macOS) / `~/.config/Block/goose/config.yaml` (Linux) / `%APPDATA%\Block\goose\config.yaml` (Windows)
+
+Restart the host. Robot Actions tools should appear in the agent's tool list. First-ever call takes ~5–10s while npm downloads `mcp-remote`; subsequent calls are fast.
+
+### Cursor / Windsurf / Continue (URL + headers, native SSE)
+
+These hosts support SSE directly. No bridge needed.
 
 ```json
 {
@@ -65,34 +96,14 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json` (Claude
 }
 ```
 
-Restart the client. The Robot Actions tools should appear in the agent's tool list.
+Where to put it:
+- **Cursor** — `~/.cursor/mcp.json` (or per-project `.cursor/mcp.json`)
+- **Windsurf** — `~/.codeium/windsurf/mcp_config.json`
+- **Continue** — `~/.continue/config.json`
 
-### Claude Code (CLI)
+### VS Code Copilot Chat (different envelope)
 
-```bash
-claude mcp add robot-actions \
-  --transport sse \
-  https://<your-subdomain>.robotactions.com/mcp/sse \
-  --header "Authorization: Bearer <your-api-token>"
-```
-
-Verify:
-
-```bash
-claude mcp list
-```
-
-### Windsurf
-
-Edit `~/.codeium/windsurf/mcp_config.json` with the same `mcpServers` shape as Claude Desktop above.
-
-### Goose
-
-Edit `~/.config/Block/goose/config.yaml` (Linux) / `~/Library/Application Support/Block/goose/config.yaml` (macOS) / `%APPDATA%\Block\goose\config.yaml` (Windows). Same `mcpServers` envelope.
-
-### VS Code Copilot Chat
-
-Different envelope — `servers` instead of `mcpServers`, with a `type` field and the `/mcp` endpoint (not `/mcp/sse`):
+Uses `servers` instead of `mcpServers`, requires `type: "http"`, and hits the Streamable-HTTP endpoint at `/mcp` (note: not `/mcp/sse`).
 
 ```json
 {
@@ -108,15 +119,22 @@ Different envelope — `servers` instead of `mcpServers`, with a `type` field an
 }
 ```
 
-Add to your User Settings or `.vscode/mcp.json`.
+Add to your User Settings or `.vscode/mcp.json` (workspace-scoped).
 
-### Cline
+### Claude Code (CLI)
 
-Cline stores its MCP config inside the VS Code extension storage dir. Same `mcpServers` envelope as Claude Desktop. The `@robotactions/mcp` installer above writes this path automatically — recommended over hand-editing.
+```bash
+claude mcp add robot-actions \
+  --transport sse \
+  https://<your-subdomain>.robotactions.com/mcp/sse \
+  --header "Authorization: Bearer <your-api-token>"
+```
 
-### Continue
+Verify:
 
-Edit `~/.continue/config.json`. Same `mcpServers` envelope.
+```bash
+claude mcp list
+```
 
 ### Other MCP clients
 
