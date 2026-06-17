@@ -1,8 +1,22 @@
 # Using Robot Actions from an AI agent (MCP)
 
-Robot Actions exposes an **MCP** (Model Context Protocol) endpoint that AI agents — Claude Desktop, Claude Code, Cursor, Windsurf, or any MCP-compatible client — can use to drive real Android and iOS devices programmatically. Same actions you'd take by hand in the web UI: tap, swipe, type, screenshot, page-source dump, app install/launch, flow record + replay, and a couple dozen more.
+Robot Actions exposes an **MCP** (Model Context Protocol) endpoint that AI agents — Claude Desktop, Claude Code, Cursor, VS Code Copilot Chat, Windsurf, Goose, Cline, Continue — can use to drive real Android and iOS devices programmatically. Same actions you'd take by hand in the web UI: tap, swipe, type, screenshot, page-source dump, app install/launch, flow record + replay, and a couple dozen more.
 
 > **You need a Robot Actions account first.** Sign up at <https://robotactions.com>. The MCP endpoint is per-account — your AI agent talks to *your* devices, not anyone else's.
+
+---
+
+## Quick start — one command
+
+```bash
+npx @robotactions/mcp init
+```
+
+That's it. The [installer](./packages/mcp/README.md) auto-detects which MCP hosts you have installed, opens your browser to sign in (one time), creates an API token in your account, and writes the config file for each host. After it finishes, restart your host and the Robot Actions tools appear in the agent's tool list.
+
+**Prefer one-click from the browser?** If you're already in the web app, go to **Settings → Connect MCP** and click **Install in Cursor** or **Install in VS Code Copilot Chat** — same result, no terminal needed.
+
+**Prefer hand-editing config?** Read on for the manual setup.
 
 ---
 
@@ -68,9 +82,45 @@ Verify:
 claude mcp list
 ```
 
-### Windsurf / other MCP clients
+### Windsurf
 
-Same shape — point them at the SSE URL with an `Authorization: Bearer <token>` header. Refer to your client's MCP docs for where the config file lives.
+Edit `~/.codeium/windsurf/mcp_config.json` with the same `mcpServers` shape as Claude Desktop above.
+
+### Goose
+
+Edit `~/.config/Block/goose/config.yaml` (Linux) / `~/Library/Application Support/Block/goose/config.yaml` (macOS) / `%APPDATA%\Block\goose\config.yaml` (Windows). Same `mcpServers` envelope.
+
+### VS Code Copilot Chat
+
+Different envelope — `servers` instead of `mcpServers`, with a `type` field and the `/mcp` endpoint (not `/mcp/sse`):
+
+```json
+{
+  "servers": {
+    "robot-actions": {
+      "type": "http",
+      "url": "https://<your-subdomain>.robotactions.com/mcp",
+      "headers": {
+        "Authorization": "Bearer <your-api-token>"
+      }
+    }
+  }
+}
+```
+
+Add to your User Settings or `.vscode/mcp.json`.
+
+### Cline
+
+Cline stores its MCP config inside the VS Code extension storage dir. Same `mcpServers` envelope as Claude Desktop. The `@robotactions/mcp` installer above writes this path automatically — recommended over hand-editing.
+
+### Continue
+
+Edit `~/.continue/config.json`. Same `mcpServers` envelope.
+
+### Other MCP clients
+
+Same shape as Claude Desktop — point them at the SSE URL with an `Authorization: Bearer <token>` header. Refer to your client's MCP docs for where the config file lives.
 
 ---
 
