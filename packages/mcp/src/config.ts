@@ -37,7 +37,14 @@ export function loadConfig(): RuntimeConfig {
     return {
         auth0Domain: process.env.ROBOTACTIONS_AUTH0_DOMAIN ?? 'auth.robotactions.com',
         auth0ClientId: process.env.ROBOTACTIONS_AUTH0_CLIENT_ID ?? DEFAULT_AUTH0_CLIENT_ID,
-        auth0Audience: process.env.ROBOTACTIONS_AUTH0_AUDIENCE ?? 'https://robotactions.com/api',
+        // Must match the audience the RDS server's verifyAuth0AccessToken
+        // expects (auth0Config.audience). Currently the legacy namespace
+        // 'https://demo.robotactions.com/api/' — trailing slash matters,
+        // Auth0 treats audiences as strict string identifiers. There's a
+        // follow-up to migrate the server to the non-demo namespace; the
+        // CLI default tracks the server.
+        auth0Audience:
+            process.env.ROBOTACTIONS_AUTH0_AUDIENCE ?? 'https://demo.robotactions.com/api/',
         // Generic entry subdomain — the worker (cloudflare-worker/src/worker.ts)
         // reads the Auth0 token's subdomain claim and transparently proxies
         // each request to the user's actual tenant origin. The CLI never
