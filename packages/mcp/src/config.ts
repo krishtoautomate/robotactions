@@ -38,7 +38,12 @@ export function loadConfig(): RuntimeConfig {
         auth0Domain: process.env.ROBOTACTIONS_AUTH0_DOMAIN ?? 'auth.robotactions.com',
         auth0ClientId: process.env.ROBOTACTIONS_AUTH0_CLIENT_ID ?? DEFAULT_AUTH0_CLIENT_ID,
         auth0Audience: process.env.ROBOTACTIONS_AUTH0_AUDIENCE ?? 'https://robotactions.com/api',
-        apiBase: process.env.ROBOTACTIONS_API_BASE ?? 'https://test.robotactions.com',
+        // Generic entry subdomain — the worker (cloudflare-worker/src/worker.ts)
+        // reads the Auth0 token's subdomain claim and transparently proxies
+        // each request to the user's actual tenant origin. The CLI never
+        // needs to know the tenant in advance, and mcp.robotactions.com
+        // doesn't host an origin of its own — the worker provides routing.
+        apiBase: process.env.ROBOTACTIONS_API_BASE ?? 'https://mcp.robotactions.com',
         cliVersion: process.env.npm_package_version ?? '0.0.0-dev',
     };
 }
