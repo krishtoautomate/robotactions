@@ -9,10 +9,10 @@
 </p>
 
 <p align="center">
-  <a href="https://robotactions.com">Product</a> ·
-  <a href="https://robotactions.com/pricing">Pricing</a> ·
+  <a href="https://robotactions.com/#services">Services</a> ·
+  <a href="https://robotactions.com/#pricing">Pricing</a> ·
   <a href="USING_MCP.md">Use from an AI agent</a> ·
-  <a href="../../issues">File an issue</a>
+  <a href="https://github.com/krishtoautomate/robotactions/issues">File an issue</a>
 </p>
 
 ---
