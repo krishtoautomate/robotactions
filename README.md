@@ -1,11 +1,25 @@
-# Robot Actions
+<p align="center">
+  <a href="https://robotactions.com">
+    <img src="assets/logo-horizontal.svg" alt="Robot Actions" width="420" />
+  </a>
+</p>
 
-**Test mobile and web apps from anywhere.** Robot Actions is a cloud-connected testing platform that lets you control real Android and iOS devices through a web browser, automate test flows with an AI assistant, and generate runnable test scripts in your framework of choice (WebdriverIO, Python, Robot Framework, and more).
+<p align="center">
+  <strong>Test mobile and web apps from anywhere.</strong>
+</p>
 
-🔗 **Product**: <https://robotactions.com>
-📋 **Pricing & tiers**: <https://robotactions.com/pricing>
-📨 **Sales & enterprise**: support@robotactions.com
-🤖 **Drive Robot Actions from an AI agent**: [USING_MCP.md](USING_MCP.md) — Claude Desktop, Cursor, Windsurf, Claude Code, and any other MCP-compatible client
+<p align="center">
+  <a href="https://robotactions.com">Product</a> ·
+  <a href="https://robotactions.com/pricing">Pricing</a> ·
+  <a href="USING_MCP.md">Use from an AI agent</a> ·
+  <a href="../../issues">File an issue</a>
+</p>
+
+---
+
+Robot Actions is a cloud-connected testing platform that lets you control real Android and iOS devices through a web browser, automate test flows with an AI assistant, and generate runnable test scripts in your framework of choice (WebdriverIO, Python, Robot Framework, and more).
+
+For sales or enterprise questions: support@robotactions.com.
 
 <!-- mcp-name: io.github.krishtoautomate/remote-device-server -->
 
