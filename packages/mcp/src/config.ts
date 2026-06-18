@@ -11,15 +11,19 @@
  * staging Auth0 tenant or a local RDS instance.
  */
 
+import { createRequire } from 'node:module';
+
+// Read the installed package's own version directly so `--version` shows
+// the actual @robotactions/mcp version, not whatever ambient
+// process.env.npm_package_version happens to be (which is the *caller's*
+// project version when npx is invoked from inside another package).
+const pkg = createRequire(import.meta.url)('../package.json') as { version: string };
+
 export interface RuntimeConfig {
     auth0Domain: string;
     auth0ClientId: string;
     auth0Audience: string;
     apiBase: string;
-    /**
-     * Bake this at build time so a globally-installed npx run picks up the
-     * right value without env vars. Set via build-time env in npm publish CI.
-     */
     cliVersion: string;
 }
 
@@ -51,6 +55,6 @@ export function loadConfig(): RuntimeConfig {
         // needs to know the tenant in advance, and mcp.robotactions.com
         // doesn't host an origin of its own — the worker provides routing.
         apiBase: process.env.ROBOTACTIONS_API_BASE ?? 'https://mcp.robotactions.com',
-        cliVersion: process.env.npm_package_version ?? '0.0.0-dev',
+        cliVersion: pkg.version,
     };
 }

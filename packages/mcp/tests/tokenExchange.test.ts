@@ -77,21 +77,21 @@ describe('exchangeAuth0Token', () => {
             return new Response(
                 JSON.stringify({
                     token: 't',
-                    tenant_origin: 'https://enterprise.robotactions.com',
-                    mcp_sse_url: 'https://enterprise.robotactions.com/mcp/sse',
+                    tenant_origin: 'https://acme.robotactions.com',
+                    mcp_sse_url: 'https://acme.robotactions.com/mcp/sse',
                     name: 'x',
                     expires_in_days: 365,
                 }),
                 { status: 200 },
             );
         };
-        await exchangeAuth0Token(fakeAuth0TokenWithSubdomain('enterprise'), {
+        await exchangeAuth0Token(fakeAuth0TokenWithSubdomain('acme'), {
             apiBase: 'https://mcp.robotactions.com',
             label: 'x',
             fetchImpl,
         });
         // CRITICAL: routed straight to the user's tenant in one POST
-        expect(capturedUrl).toBe('https://enterprise.robotactions.com/api/tokens/from-auth0');
+        expect(capturedUrl).toBe('https://acme.robotactions.com/api/tokens/from-auth0');
     });
 
     it('defaults to test.robotactions.com when subdomain claim missing', async () => {
@@ -130,7 +130,7 @@ describe('exchangeAuth0Token', () => {
             capturedUrl = typeof input === 'string' ? input : input.toString();
             return new Response('{"token":"","tenant_origin":"","mcp_sse_url":"","name":"","expires_in_days":0}', { status: 200 });
         };
-        await exchangeAuth0Token(fakeAuth0TokenWithSubdomain('enterprise'), {
+        await exchangeAuth0Token(fakeAuth0TokenWithSubdomain('acme'), {
             // Dev/staging override — claim is ignored, request goes here verbatim
             apiBase: 'https://staging.example.com',
             label: 'x',

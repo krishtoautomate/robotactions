@@ -1,6 +1,6 @@
 {
     "name": "@robotactions/mcp",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "description": "One-command installer for Robot Actions MCP. Connects Claude Desktop / Cursor / VS Code Copilot / Windsurf / Goose / Cline / Continue to your Robot Actions account.",
     "license": "MIT",
     "type": "module",
