@@ -31,7 +31,7 @@ export interface HostDescriptor {
 
 const SERVER_NAME = 'robot-actions';
 
-/** Standard `mcpServers` envelope used by Claude Desktop, Cursor, Windsurf, Goose, Continue. */
+/** Cursor / Windsurf / Continue accept the URL+headers shape natively. */
 function buildMcpServersConfig(existing: unknown, sseUrl: string, token: string): Record<string, unknown> {
     const base =
         typeof existing === 'object' && existing !== null
@@ -49,6 +49,45 @@ function buildMcpServersConfig(existing: unknown, sseUrl: string, token: string)
             [SERVER_NAME]: {
                 url: sseUrl,
                 headers: { Authorization: `Bearer ${token}` },
+            },
+        },
+    };
+}
+
+/**
+ * Claude Desktop only accepts STDIO transport — the URL+headers shape that
+ * Cursor accepts is rejected with "not valid MCP server configurations".
+ * Wrap the SSE endpoint with `mcp-remote`, the standard stdio→SSE bridge
+ * (npmjs.com/package/mcp-remote). Spawned via npx so users don't need a
+ * separate global install.
+ *
+ * Cline + Goose docs ALSO recommend this wrapper for remote SSE servers
+ * — using the same shape across stdio-only hosts keeps the per-host
+ * branching minimal.
+ */
+function buildClaudeDesktopConfig(existing: unknown, sseUrl: string, token: string): Record<string, unknown> {
+    const base =
+        typeof existing === 'object' && existing !== null
+            ? (existing as Record<string, unknown>)
+            : {};
+    const existingServers =
+        typeof base.mcpServers === 'object' && base.mcpServers !== null
+            ? (base.mcpServers as Record<string, unknown>)
+            : {};
+
+    return {
+        ...base,
+        mcpServers: {
+            ...existingServers,
+            [SERVER_NAME]: {
+                command: 'npx',
+                args: [
+                    '-y',
+                    'mcp-remote',
+                    sseUrl,
+                    '--header',
+                    `Authorization: Bearer ${token}`,
+                ],
             },
         },
     };
@@ -159,13 +198,19 @@ function clinePath(): string | null {
 }
 
 export const HOSTS: HostDescriptor[] = [
-    { id: 'claude-desktop', label: 'Claude Desktop', configPath: claudeDesktopPath, buildConfig: buildMcpServersConfig },
+    // Stdio-only hosts → mcp-remote wrapper. Claude Desktop strictly rejects
+    // the URL+headers shape; Cline + Goose accept either but stdio works
+    // universally + matches their docs' "remote MCP" example.
+    { id: 'claude-desktop', label: 'Claude Desktop', configPath: claudeDesktopPath, buildConfig: buildClaudeDesktopConfig },
+    { id: 'cline', label: 'Cline', configPath: clinePath, buildConfig: buildClaudeDesktopConfig },
+    { id: 'goose', label: 'Goose', configPath: goosePath, buildConfig: buildClaudeDesktopConfig },
+    // SSE-native hosts → URL+headers shape directly, no wrapper.
     { id: 'cursor', label: 'Cursor', configPath: cursorPath, buildConfig: buildMcpServersConfig },
-    { id: 'vscode-copilot', label: 'VS Code (Copilot Chat)', configPath: vscodePath, buildConfig: buildVsCodeConfig },
     { id: 'windsurf', label: 'Windsurf', configPath: windsurfPath, buildConfig: buildMcpServersConfig },
-    { id: 'goose', label: 'Goose', configPath: goosePath, buildConfig: buildMcpServersConfig },
     { id: 'continue', label: 'Continue', configPath: continuePath, buildConfig: buildMcpServersConfig },
-    { id: 'cline', label: 'Cline', configPath: clinePath, buildConfig: buildMcpServersConfig },
+    // VS Code Copilot Chat → uses a different envelope (`servers` not
+    // `mcpServers`) + `type: "http"` field + `/mcp` (not `/mcp/sse`).
+    { id: 'vscode-copilot', label: 'VS Code (Copilot Chat)', configPath: vscodePath, buildConfig: buildVsCodeConfig },
 ];
 
 export function findHostById(id: string): HostDescriptor | undefined {
