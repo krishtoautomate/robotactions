@@ -8,9 +8,11 @@ import { describe, it, expect } from 'vitest';
 import { findHostById, HOSTS } from '../src/hosts.js';
 
 const SSE = 'https://acme.robotactions.com/mcp/sse';
+// The builders rewrite the legacy SSE endpoint to the stateless Streamable HTTP one.
+const HTTP = 'https://acme.robotactions.com/mcp';
 const TOKEN = 'tk_123';
 
-describe('hosts.buildConfig — Cursor / Windsurf / Continue use URL+headers shape', () => {
+describe('hosts.buildConfig — Cursor / Windsurf use URL+headers shape', () => {
     it('Cursor: adds robot-actions under mcpServers without dropping existing entries', () => {
         const host = findHostById('cursor')!;
         const existing = {
@@ -23,7 +25,7 @@ describe('hosts.buildConfig — Cursor / Windsurf / Continue use URL+headers sha
             mcpServers: {
                 'some-other-server': { command: 'python', args: ['-m', 'whatever'] },
                 'robot-actions': {
-                    url: SSE,
+                    url: HTTP,
                     headers: { Authorization: `Bearer ${TOKEN}` },
                 },
             },
@@ -35,7 +37,7 @@ describe('hosts.buildConfig — Cursor / Windsurf / Continue use URL+headers sha
         const next = host.buildConfig({}, SSE, TOKEN);
         expect(next).toEqual({
             mcpServers: {
-                'robot-actions': { url: SSE, headers: { Authorization: `Bearer ${TOKEN}` } },
+                'robot-actions': { url: HTTP, headers: { Authorization: `Bearer ${TOKEN}` } },
             },
         });
     });
@@ -50,7 +52,23 @@ describe('hosts.buildConfig — Cursor / Windsurf / Continue use URL+headers sha
         const next = host.buildConfig(existing, SSE, TOKEN) as {
             mcpServers: { 'robot-actions': { url: string } };
         };
-        expect(next.mcpServers['robot-actions'].url).toBe(SSE);
+        expect(next.mcpServers['robot-actions'].url).toBe(HTTP);
+    });
+});
+
+describe('hosts.buildConfig — Continue uses streamable-http shape', () => {
+    it('Continue: type=streamable-http + /mcp + requestOptions.headers', () => {
+        const host = findHostById('continue')!;
+        const next = host.buildConfig({}, SSE, TOKEN);
+        expect(next).toEqual({
+            mcpServers: {
+                'robot-actions': {
+                    type: 'streamable-http',
+                    url: HTTP,
+                    requestOptions: { headers: { Authorization: `Bearer ${TOKEN}` } },
+                },
+            },
+        });
     });
 });
 
@@ -67,7 +85,7 @@ describe('hosts.buildConfig — Claude Desktop / Cline / Goose use mcp-remote st
             mcpServers: {
                 'robot-actions': {
                     command: 'npx',
-                    args: ['-y', 'mcp-remote', SSE, '--header', `Authorization: Bearer ${TOKEN}`],
+                    args: ['-y', 'mcp-remote', HTTP, '--header', `Authorization: Bearer ${TOKEN}`],
                 },
             },
         });

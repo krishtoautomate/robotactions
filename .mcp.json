@@ -1,7 +1,7 @@
 {
     "mcpServers": {
         "robot-actions": {
-            "url": "https://test.robotactions.com/mcp/sse",
+            "url": "https://test.robotactions.com/mcp",
             "headers": {
                 "Authorization": "Bearer ${ROBOTACTIONS_API_TOKEN}"
             }
