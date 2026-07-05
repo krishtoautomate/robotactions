@@ -31,7 +31,18 @@ export interface HostDescriptor {
 
 const SERVER_NAME = 'robot-actions';
 
-/** Standard `mcpServers` envelope used by Claude Desktop, Cursor, Windsurf, Goose, Continue. */
+/**
+ * Convert the legacy SSE endpoint (…/mcp/sse) to the Streamable HTTP endpoint
+ * (…/mcp). The stateless /mcp endpoint is restart-immune; /mcp/sse is the
+ * connection-bound legacy transport that orphans a client's session whenever
+ * the server restarts (the "session expired while token valid" bug). Every
+ * host that speaks Streamable HTTP targets /mcp.
+ */
+function toStreamableUrl(sseUrl: string): string {
+    return sseUrl.replace(/\/mcp\/sse$/, '/mcp');
+}
+
+/** Cursor / Windsurf accept the URL+headers shape and auto-detect Streamable HTTP from /mcp. */
 function buildMcpServersConfig(existing: unknown, sseUrl: string, token: string): Record<string, unknown> {
     const base =
         typeof existing === 'object' && existing !== null
@@ -47,8 +58,77 @@ function buildMcpServersConfig(existing: unknown, sseUrl: string, token: string)
         mcpServers: {
             ...existingServers,
             [SERVER_NAME]: {
-                url: sseUrl,
+                url: toStreamableUrl(sseUrl),
                 headers: { Authorization: `Bearer ${token}` },
+            },
+        },
+    };
+}
+
+/**
+ * Continue speaks Streamable HTTP but with a distinct shape from Cursor/Windsurf:
+ * it requires an explicit `type: "streamable-http"` and nests auth under
+ * `requestOptions.headers` (not a top-level `headers`). See Continue MCP docs
+ * (docs.continue.dev/customize/deep-dives/mcp) — verified 2026-07-05.
+ */
+function buildContinueConfig(existing: unknown, sseUrl: string, token: string): Record<string, unknown> {
+    const base =
+        typeof existing === 'object' && existing !== null
+            ? (existing as Record<string, unknown>)
+            : {};
+    const existingServers =
+        typeof base.mcpServers === 'object' && base.mcpServers !== null
+            ? (base.mcpServers as Record<string, unknown>)
+            : {};
+
+    return {
+        ...base,
+        mcpServers: {
+            ...existingServers,
+            [SERVER_NAME]: {
+                type: 'streamable-http',
+                url: toStreamableUrl(sseUrl),
+                requestOptions: { headers: { Authorization: `Bearer ${token}` } },
+            },
+        },
+    };
+}
+
+/**
+ * Claude Desktop only accepts STDIO transport — the URL+headers shape that
+ * Cursor accepts is rejected with "not valid MCP server configurations".
+ * Wrap the Streamable HTTP endpoint with `mcp-remote`, the standard stdio
+ * bridge (npmjs.com/package/mcp-remote), which auto-detects Streamable HTTP
+ * and reconnects transparently. Spawned via npx so users don't need a
+ * separate global install.
+ *
+ * Cline + Goose docs ALSO recommend this wrapper for remote MCP servers
+ * — using the same shape across stdio-only hosts keeps the per-host
+ * branching minimal.
+ */
+function buildClaudeDesktopConfig(existing: unknown, sseUrl: string, token: string): Record<string, unknown> {
+    const base =
+        typeof existing === 'object' && existing !== null
+            ? (existing as Record<string, unknown>)
+            : {};
+    const existingServers =
+        typeof base.mcpServers === 'object' && base.mcpServers !== null
+            ? (base.mcpServers as Record<string, unknown>)
+            : {};
+
+    return {
+        ...base,
+        mcpServers: {
+            ...existingServers,
+            [SERVER_NAME]: {
+                command: 'npx',
+                args: [
+                    '-y',
+                    'mcp-remote',
+                    toStreamableUrl(sseUrl),
+                    '--header',
+                    `Authorization: Bearer ${token}`,
+                ],
             },
         },
     };
@@ -56,7 +136,7 @@ function buildMcpServersConfig(existing: unknown, sseUrl: string, token: string)
 
 /** VS Code Copilot Chat config uses `servers` instead of `mcpServers` + a `type` field. */
 function buildVsCodeConfig(existing: unknown, sseUrl: string, token: string): Record<string, unknown> {
-    const httpUrl = sseUrl.replace(/\/mcp\/sse$/, '/mcp');
+    const httpUrl = toStreamableUrl(sseUrl);
     const base =
         typeof existing === 'object' && existing !== null
             ? (existing as Record<string, unknown>)
@@ -159,13 +239,21 @@ function clinePath(): string | null {
 }
 
 export const HOSTS: HostDescriptor[] = [
-    { id: 'claude-desktop', label: 'Claude Desktop', configPath: claudeDesktopPath, buildConfig: buildMcpServersConfig },
+    // Stdio-only hosts → mcp-remote wrapper. Claude Desktop strictly rejects
+    // the URL+headers shape; Cline + Goose accept either but stdio works
+    // universally + matches their docs' "remote MCP" example.
+    { id: 'claude-desktop', label: 'Claude Desktop', configPath: claudeDesktopPath, buildConfig: buildClaudeDesktopConfig },
+    { id: 'cline', label: 'Cline', configPath: clinePath, buildConfig: buildClaudeDesktopConfig },
+    { id: 'goose', label: 'Goose', configPath: goosePath, buildConfig: buildClaudeDesktopConfig },
+    // Streamable-HTTP hosts → URL+headers shape directly, no wrapper. Cursor/Windsurf
+    // auto-detect the transport from the /mcp endpoint.
     { id: 'cursor', label: 'Cursor', configPath: cursorPath, buildConfig: buildMcpServersConfig },
-    { id: 'vscode-copilot', label: 'VS Code (Copilot Chat)', configPath: vscodePath, buildConfig: buildVsCodeConfig },
     { id: 'windsurf', label: 'Windsurf', configPath: windsurfPath, buildConfig: buildMcpServersConfig },
-    { id: 'goose', label: 'Goose', configPath: goosePath, buildConfig: buildMcpServersConfig },
-    { id: 'continue', label: 'Continue', configPath: continuePath, buildConfig: buildMcpServersConfig },
-    { id: 'cline', label: 'Cline', configPath: clinePath, buildConfig: buildMcpServersConfig },
+    // Continue needs an explicit `type: "streamable-http"` + requestOptions.headers.
+    { id: 'continue', label: 'Continue', configPath: continuePath, buildConfig: buildContinueConfig },
+    // VS Code Copilot Chat → uses a different envelope (`servers` not
+    // `mcpServers`) + `type: "http"` field + `/mcp` (not `/mcp/sse`).
+    { id: 'vscode-copilot', label: 'VS Code (Copilot Chat)', configPath: vscodePath, buildConfig: buildVsCodeConfig },
 ];
 
 export function findHostById(id: string): HostDescriptor | undefined {

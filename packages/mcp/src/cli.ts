@@ -19,8 +19,8 @@
  *      revocation reference.
  *
  * NOT a long-running daemon — this is a one-shot installer. Once configs
- * are written, MCP traffic flows directly from the host to RDS's /mcp/sse
- * with no involvement from this binary.
+ * are written, MCP traffic flows directly from the host to RDS's stateless
+ * /mcp (Streamable HTTP) endpoint with no involvement from this binary.
  */
 
 import { hostname } from 'node:os';

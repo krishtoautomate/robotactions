@@ -40,7 +40,9 @@ describe('installInHost', () => {
         expect(result.error).toBeUndefined();
         expect(existsSync(path)).toBe(true);
         const config = JSON.parse(readFileSync(path, 'utf8'));
-        expect(config.mcpServers['robot-actions'].url).toBe('https://a.example.com/mcp/sse');
+        // cursor uses buildMcpServersConfig, which rewrites the SSE input URL to
+        // the stateless Streamable HTTP endpoint (/mcp/sse → /mcp).
+        expect(config.mcpServers['robot-actions'].url).toBe('https://a.example.com/mcp');
         expect(existsSync(`${path}.bak`)).toBe(false);
     });
 
