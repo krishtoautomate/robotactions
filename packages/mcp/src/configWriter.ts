@@ -13,9 +13,25 @@
  */
 
 import { mkdirSync, readFileSync, writeFileSync, existsSync, copyFileSync } from 'node:fs';
-import { dirname } from 'node:path';
+import { dirname, join } from 'node:path';
 import type { HostDescriptor } from './hosts.js';
 import { HOSTS } from './hosts.js';
+
+/**
+ * Heuristic: is `cwd` a project/workspace root the user expects the installer
+ * to write into (rather than their global config)? True when any of the common
+ * project markers is present — a git repo, or an existing editor workspace dir.
+ * Keep this cheap and conservative: a false negative just falls back to global
+ * (with `--project` as the explicit override), which is the safe direction.
+ */
+export function isProjectDir(cwd: string): boolean {
+    return (
+        existsSync(join(cwd, '.git')) ||
+        existsSync(join(cwd, '.vscode')) ||
+        existsSync(join(cwd, '.cursor')) ||
+        existsSync(join(cwd, '.mcp.json'))
+    );
+}
 
 export interface DetectedHost {
     host: HostDescriptor;

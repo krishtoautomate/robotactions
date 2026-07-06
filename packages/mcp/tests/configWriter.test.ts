@@ -11,7 +11,8 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { mkdtempSync, rmSync, writeFileSync, readFileSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { installInHost } from '../src/configWriter.js';
+import { mkdirSync } from 'node:fs';
+import { installInHost, isProjectDir } from '../src/configWriter.js';
 import { findHostById } from '../src/hosts.js';
 
 let TMP: string;
@@ -97,5 +98,43 @@ describe('installInHost', () => {
         const result = installInHost(detectedFor(bad), 'https://a/sse', 'tk');
         expect(result.error).toBeDefined();
         expect(result.action).toBe('skipped');
+    });
+
+    it('writes a project-scoped VS Code workspace file at cwd/.vscode/mcp.json', () => {
+        const vscode = findHostById('vscode-copilot')!;
+        const path = vscode.projectConfigPath!(TMP);
+        expect(path).toBe(join(TMP, '.vscode', 'mcp.json'));
+        const result = installInHost(
+            { host: vscode, configPath: path, configDirExists: true, configFileExists: false },
+            'https://a.example.com/mcp/sse',
+            'tk',
+        );
+        expect(result.error).toBeUndefined();
+        expect(existsSync(path)).toBe(true);
+        const cfg = JSON.parse(readFileSync(path, 'utf8'));
+        // VS Code uses the `servers` envelope with type:http on the /mcp endpoint.
+        expect(cfg.servers['robot-actions']).toEqual({
+            type: 'http',
+            url: 'https://a.example.com/mcp',
+            headers: { Authorization: 'Bearer tk' },
+        });
+    });
+});
+
+describe('isProjectDir', () => {
+    it('is false for an empty directory', () => {
+        expect(isProjectDir(TMP)).toBe(false);
+    });
+
+    for (const marker of ['.git', '.vscode', '.cursor']) {
+        it(`is true when ${marker}/ is present`, () => {
+            mkdirSync(join(TMP, marker));
+            expect(isProjectDir(TMP)).toBe(true);
+        });
+    }
+
+    it('is true when a .mcp.json already exists', () => {
+        writeFileSync(join(TMP, '.mcp.json'), '{}', 'utf8');
+        expect(isProjectDir(TMP)).toBe(true);
     });
 });

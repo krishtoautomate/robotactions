@@ -147,3 +147,44 @@ describe('HOSTS registry', () => {
         expect(findHostById('nope')).toBeUndefined();
     });
 });
+
+describe('project-scoped config paths', () => {
+    it('VS Code / Cursor / Claude Code expose projectConfigPath; others do not', () => {
+        const capable = HOSTS.filter((h) => h.projectConfigPath).map((h) => h.id).sort();
+        expect(capable).toEqual(['claude-code', 'cursor', 'vscode-copilot']);
+        // Global-only hosts must NOT have a project path.
+        expect(findHostById('claude-desktop')?.projectConfigPath).toBeUndefined();
+        expect(findHostById('windsurf')?.projectConfigPath).toBeUndefined();
+    });
+
+    it('project paths are cwd-relative workspace files', () => {
+        const cwd = '/tmp/myproj';
+        expect(findHostById('vscode-copilot')!.projectConfigPath!(cwd)).toBe('/tmp/myproj/.vscode/mcp.json');
+        expect(findHostById('cursor')!.projectConfigPath!(cwd)).toBe('/tmp/myproj/.cursor/mcp.json');
+        expect(findHostById('claude-code')!.projectConfigPath!(cwd)).toBe('/tmp/myproj/.mcp.json');
+    });
+
+    it('Claude Code is project-only: global configPath returns null (not written by this CLI)', () => {
+        expect(findHostById('claude-code')!.configPath()).toBeNull();
+    });
+
+    it('Claude Code builder: mcpServers envelope + type:http + /mcp + Bearer header', () => {
+        const next = findHostById('claude-code')!.buildConfig({}, SSE, TOKEN) as {
+            mcpServers: { 'robot-actions': Record<string, unknown> };
+        };
+        expect(next.mcpServers['robot-actions']).toEqual({
+            type: 'http',
+            url: HTTP,
+            headers: { Authorization: `Bearer ${TOKEN}` },
+        });
+    });
+
+    it('Claude Code builder preserves existing mcpServers entries', () => {
+        const existing = { mcpServers: { other: { command: 'python' } } };
+        const next = findHostById('claude-code')!.buildConfig(existing, SSE, TOKEN) as {
+            mcpServers: Record<string, unknown>;
+        };
+        expect(next.mcpServers.other).toEqual({ command: 'python' });
+        expect(next.mcpServers['robot-actions']).toBeDefined();
+    });
+});
