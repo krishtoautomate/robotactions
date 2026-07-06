@@ -14,6 +14,13 @@ npx @robotactions/mcp init
 
 That's it. The [installer](./packages/mcp/README.md) auto-detects which MCP hosts you have installed, opens your browser to sign in (one time), creates an API token in your account, and writes the config file for each host. After it finishes, restart your host and the Robot Actions tools appear in the agent's tool list.
 
+**Project vs global scope.** Run `init` **inside a project** (a directory with `.git` / `.vscode` / `.cursor` / `.mcp.json`) and it writes **workspace** files scoped to that repo — `.vscode/mcp.json` (VS Code), `.cursor/mcp.json` (Cursor), and `.mcp.json` (Claude Code). Run it anywhere else and it writes each host's **global** user config. Force it either way with `--project` or `--global`:
+
+```bash
+npx @robotactions/mcp init --project   # workspace files in the current directory
+npx @robotactions/mcp init --global    # global user config for installed hosts
+```
+
 **Prefer one-click from the browser?** If you're already in the web app, go to **Settings → Connect MCP** and click **Install in Cursor** or **Install in VS Code Copilot Chat** — same result, no terminal needed.
 
 **Prefer hand-editing config?** Read on for the manual setup.

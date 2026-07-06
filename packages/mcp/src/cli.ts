@@ -28,17 +28,26 @@ import open from 'open';
 import { loadConfig } from './config.js';
 import { requestDeviceCode, pollForAccessToken, DeviceFlowError } from './deviceFlow.js';
 import { exchangeAuth0Token, TokenExchangeError } from './tokenExchange.js';
-import { detectInstalledHosts, installInHost } from './configWriter.js';
+import { detectInstalledHosts, installInHost, isProjectDir } from './configWriter.js';
 import { HOSTS, findHostById, type HostDescriptor } from './hosts.js';
 
 const HELP = `Robot Actions MCP installer
 
 Usage:
-  npx @robotactions/mcp init                        Detect installed MCP hosts + install in all of them
+  npx @robotactions/mcp init                        Auto: project-scoped config if run inside a project, else global
+  npx @robotactions/mcp init --project              Force project-scoped config in the current directory
+  npx @robotactions/mcp init --global               Force global (user-level) config for installed hosts
   npx @robotactions/mcp init --host claude-desktop  Install in a specific host (repeatable)
-  npx @robotactions/mcp init --all                  Install in every supported host on this OS (no detection)
+  npx @robotactions/mcp init --all                  Install in every supported host on this OS (global, no detection)
+
+Scope:
+  Run inside a project (a dir with .git / .vscode / .cursor / .mcp.json) and the installer writes
+  workspace files — .vscode/mcp.json, .cursor/mcp.json, .mcp.json — so the server is scoped to that
+  repo. Run elsewhere (or with --global) and it writes each host's global user config. --global always
+  overrides auto-detection.
 
 Supported hosts: ${HOSTS.map((h) => h.id).join(', ')}
+  Project-scoped: ${HOSTS.filter((h) => h.projectConfigPath).map((h) => h.id).join(', ')}
 
 After installation, restart your MCP host. Robot Actions tools should appear in its tool list.
 The installer creates an API token in your account; revoke it any time from Settings → API Tokens.
@@ -48,10 +57,14 @@ interface Args {
     command: 'init' | 'help' | 'version' | null;
     hosts: string[];
     all: boolean;
+    /** Force global (user-level) config, overriding project auto-detection. */
+    global: boolean;
+    /** Force project-scoped (workspace) config in the current directory. */
+    project: boolean;
 }
 
 function parseArgs(argv: string[]): Args {
-    const args: Args = { command: null, hosts: [], all: false };
+    const args: Args = { command: null, hosts: [], all: false, global: false, project: false };
     const tokens = argv.slice(2);
     if (tokens.length === 0) {
         args.command = 'help';
@@ -62,6 +75,8 @@ function parseArgs(argv: string[]): Args {
         if (t === '--help' || t === '-h') args.command = 'help';
         else if (t === '--version' || t === '-v') args.command = 'version';
         else if (t === '--all') args.all = true;
+        else if (t === '--global') args.global = true;
+        else if (t === '--project' || t === '--local') args.project = true;
         else if (t === '--host') {
             const next = tokens[i + 1];
             if (next) {
@@ -87,9 +102,41 @@ async function runInit(args: Args): Promise<number> {
         return 2;
     }
 
-    // 1. Pick target hosts
+    // 1. Pick target hosts + scope (project-local vs global).
+    // --global and --all force global; --project forces project; otherwise
+    // auto-detect from the current directory. --global always wins so a user
+    // inside a repo can still install their global config on purpose.
+    const cwd = process.cwd();
+    const wantProject = !args.global && !args.all && (args.project || isProjectDir(cwd));
+
     let targets: { host: HostDescriptor; configPath: string }[];
-    if (args.hosts.length > 0) {
+    if (wantProject) {
+        // Project scope: write workspace files for the project-capable hosts
+        // (VS Code / Cursor / Claude Code). We don't "detect" here — the user
+        // is inside the project and wants the files regardless of which editor
+        // opens it later. --host narrows the set.
+        const capable = HOSTS.filter((h) => h.projectConfigPath);
+        let chosen = capable;
+        if (args.hosts.length > 0) {
+            const picked = args.hosts.map((id) => ({ id, host: findHostById(id) }));
+            for (const { id, host } of picked) {
+                if (!host) console.error(`Unknown host id: ${id}. Supported: ${HOSTS.map((x) => x.id).join(', ')}`);
+                else if (!host.projectConfigPath)
+                    console.error(`${host.label}: global-only (no project config) — re-run with --global.`);
+            }
+            chosen = picked
+                .map((p) => p.host)
+                .filter((h): h is HostDescriptor => !!h && !!h.projectConfigPath);
+        }
+        targets = chosen.map((h) => ({ host: h, configPath: h.projectConfigPath!(cwd) }));
+        if (targets.length === 0) {
+            console.error('No project-capable hosts to install. Supported in project mode: ' +
+                capable.map((h) => h.id).join(', '));
+            return 2;
+        }
+        console.log(`Installing project-scoped MCP config in ${cwd}:`);
+        console.log(`  ${targets.map((t) => t.host.label).join(', ')}\n`);
+    } else if (args.hosts.length > 0) {
         targets = args.hosts.flatMap((id) => {
             const h = findHostById(id);
             if (!h) {
@@ -98,7 +145,7 @@ async function runInit(args: Args): Promise<number> {
             }
             const p = h.configPath();
             if (!p) {
-                console.error(`${h.label}: no config path on this OS`);
+                console.error(`${h.label}: no global config path on this OS (may be project-only — try --project)`);
                 return [];
             }
             return [{ host: h, configPath: p }];
@@ -113,7 +160,7 @@ async function runInit(args: Args): Promise<number> {
         const detected = detectInstalledHosts();
         if (detected.length === 0) {
             console.error(
-                'No MCP hosts detected on this machine. Pass --host <id> or --all to install anyway.\nSupported: ' +
+                'No MCP hosts detected on this machine. Pass --host <id>, --all, or --project to install anyway.\nSupported: ' +
                     HOSTS.map((h) => h.id).join(', '),
             );
             return 1;

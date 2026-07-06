@@ -1,54 +1,54 @@
 {
-  "name": "@robotactions/mcp",
-  "version": "0.1.7",
-  "description": "One-command installer for Robot Actions MCP. Connects Claude Desktop / Cursor / VS Code Copilot / Windsurf / Goose / Cline / Continue to your Robot Actions account.",
-  "license": "MIT",
-  "type": "module",
-  "bin": {
-    "robotactions-mcp": "./dist/cli.js"
-  },
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
-  ],
-  "scripts": {
-    "build": "tsc",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "lint": "eslint src tests",
-    "prepublishOnly": "npm run build && npm test"
-  },
-  "engines": {
-    "node": ">=18"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/krishtoautomate/robotactions.git",
-    "directory": "packages/mcp"
-  },
-  "homepage": "https://github.com/krishtoautomate/robotactions/tree/main/packages/mcp#readme",
-  "bugs": "https://github.com/krishtoautomate/robotactions/issues",
-  "keywords": [
-    "mcp",
-    "model-context-protocol",
-    "robot-actions",
-    "android",
-    "ios",
-    "device-control",
-    "test-automation",
-    "claude-desktop",
-    "cursor"
-  ],
-  "dependencies": {
-    "open": "^10.1.0"
-  },
-  "devDependencies": {
-    "@types/node": "^20.11.0",
-    "@typescript-eslint/eslint-plugin": "^7.0.0",
-    "@typescript-eslint/parser": "^7.0.0",
-    "eslint": "^8.57.0",
-    "typescript": "^5.4.0",
-    "vitest": "^1.4.0"
-  }
+    "name": "@robotactions/mcp",
+    "version": "0.1.8",
+    "description": "One-command installer for Robot Actions MCP. Connects Claude Desktop / Cursor / VS Code Copilot / Windsurf / Goose / Cline / Continue to your Robot Actions account.",
+    "license": "MIT",
+    "type": "module",
+    "bin": {
+        "robotactions-mcp": "./dist/cli.js"
+    },
+    "files": [
+        "dist",
+        "README.md",
+        "LICENSE"
+    ],
+    "scripts": {
+        "build": "tsc",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "lint": "eslint src tests",
+        "prepublishOnly": "npm run build && npm test"
+    },
+    "engines": {
+        "node": ">=18"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/krishtoautomate/robotactions.git",
+        "directory": "packages/mcp"
+    },
+    "homepage": "https://github.com/krishtoautomate/robotactions/tree/main/packages/mcp#readme",
+    "bugs": "https://github.com/krishtoautomate/robotactions/issues",
+    "keywords": [
+        "mcp",
+        "model-context-protocol",
+        "robot-actions",
+        "android",
+        "ios",
+        "device-control",
+        "test-automation",
+        "claude-desktop",
+        "cursor"
+    ],
+    "dependencies": {
+        "open": "^10.1.0"
+    },
+    "devDependencies": {
+        "@types/node": "^20.11.0",
+        "@typescript-eslint/eslint-plugin": "^7.0.0",
+        "@typescript-eslint/parser": "^7.0.0",
+        "eslint": "^8.57.0",
+        "typescript": "^5.4.0",
+        "vitest": "^1.4.0"
+    }
 }

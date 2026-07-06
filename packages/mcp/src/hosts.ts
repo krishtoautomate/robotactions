@@ -23,8 +23,16 @@ import { join } from 'node:path';
 export interface HostDescriptor {
     id: string;
     label: string;
-    /** Resolves the config file path on the current OS, or null if unsupported. */
+    /** Resolves the GLOBAL (user-scoped) config file path on the current OS, or null if unsupported. */
     configPath: () => string | null;
+    /**
+     * Resolves the PROJECT-scoped (workspace) config path relative to `cwd`,
+     * or undefined if this host has no per-project config. Only hosts that read
+     * a workspace file define this — VS Code (`.vscode/mcp.json`), Cursor
+     * (`.cursor/mcp.json`), Claude Code (`.mcp.json`). Claude Desktop / Goose /
+     * Windsurf / Continue / Cline are global-only and omit it.
+     */
+    projectConfigPath?: (cwd: string) => string;
     /** Returns the existing file shape merged with our new entry. */
     buildConfig: (existing: unknown, sseUrl: string, token: string) => Record<string, unknown>;
 }
@@ -159,6 +167,46 @@ function buildVsCodeConfig(existing: unknown, sseUrl: string, token: string): Re
     };
 }
 
+/**
+ * Claude Code reads a project-root `.mcp.json` with the `mcpServers` envelope
+ * and an explicit `type` for remote transports (same shape as `claude mcp add
+ * --transport http`). Project-scoped so the server is shared with anyone who
+ * opens the repo. Docs: docs.claude.com/en/docs/claude-code/mcp.
+ */
+function buildClaudeCodeConfig(existing: unknown, sseUrl: string, token: string): Record<string, unknown> {
+    const base =
+        typeof existing === 'object' && existing !== null
+            ? (existing as Record<string, unknown>)
+            : {};
+    const existingServers =
+        typeof base.mcpServers === 'object' && base.mcpServers !== null
+            ? (base.mcpServers as Record<string, unknown>)
+            : {};
+
+    return {
+        ...base,
+        mcpServers: {
+            ...existingServers,
+            [SERVER_NAME]: {
+                type: 'http',
+                url: toStreamableUrl(sseUrl),
+                headers: { Authorization: `Bearer ${token}` },
+            },
+        },
+    };
+}
+
+// ── Project-scoped (workspace) config paths, relative to the run directory ──
+function vscodeProjectPath(cwd: string): string {
+    return join(cwd, '.vscode', 'mcp.json');
+}
+function cursorProjectPath(cwd: string): string {
+    return join(cwd, '.cursor', 'mcp.json');
+}
+function claudeCodeProjectPath(cwd: string): string {
+    return join(cwd, '.mcp.json');
+}
+
 function claudeDesktopPath(): string | null {
     const home = homedir();
     switch (platform()) {
@@ -246,14 +294,39 @@ export const HOSTS: HostDescriptor[] = [
     { id: 'cline', label: 'Cline', configPath: clinePath, buildConfig: buildClaudeDesktopConfig },
     { id: 'goose', label: 'Goose', configPath: goosePath, buildConfig: buildClaudeDesktopConfig },
     // Streamable-HTTP hosts → URL+headers shape directly, no wrapper. Cursor/Windsurf
-    // auto-detect the transport from the /mcp endpoint.
-    { id: 'cursor', label: 'Cursor', configPath: cursorPath, buildConfig: buildMcpServersConfig },
+    // auto-detect the transport from the /mcp endpoint. Cursor also reads a
+    // per-project `.cursor/mcp.json`.
+    {
+        id: 'cursor',
+        label: 'Cursor',
+        configPath: cursorPath,
+        projectConfigPath: cursorProjectPath,
+        buildConfig: buildMcpServersConfig,
+    },
     { id: 'windsurf', label: 'Windsurf', configPath: windsurfPath, buildConfig: buildMcpServersConfig },
     // Continue needs an explicit `type: "streamable-http"` + requestOptions.headers.
     { id: 'continue', label: 'Continue', configPath: continuePath, buildConfig: buildContinueConfig },
     // VS Code Copilot Chat → uses a different envelope (`servers` not
-    // `mcpServers`) + `type: "http"` field + `/mcp` (not `/mcp/sse`).
-    { id: 'vscode-copilot', label: 'VS Code (Copilot Chat)', configPath: vscodePath, buildConfig: buildVsCodeConfig },
+    // `mcpServers`) + `type: "http"` field + `/mcp` (not `/mcp/sse`). Also reads
+    // a workspace-scoped `.vscode/mcp.json`.
+    {
+        id: 'vscode-copilot',
+        label: 'VS Code (Copilot Chat)',
+        configPath: vscodePath,
+        projectConfigPath: vscodeProjectPath,
+        buildConfig: buildVsCodeConfig,
+    },
+    // Claude Code is PROJECT-ONLY here: it reads a repo-root `.mcp.json`. It has
+    // no global path this CLI writes (its user scope lives in ~/.claude.json,
+    // which we don't touch), so configPath returns null → it only appears in
+    // project mode.
+    {
+        id: 'claude-code',
+        label: 'Claude Code',
+        configPath: () => null,
+        projectConfigPath: claudeCodeProjectPath,
+        buildConfig: buildClaudeCodeConfig,
+    },
 ];
 
 export function findHostById(id: string): HostDescriptor | undefined {
