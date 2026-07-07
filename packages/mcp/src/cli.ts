@@ -159,14 +159,22 @@ async function runInit(args: Args): Promise<number> {
     } else {
         const detected = detectInstalledHosts();
         if (detected.length === 0) {
-            console.error(
-                'No MCP hosts detected on this machine. Pass --host <id>, --all, or --project to install anyway.\nSupported: ' +
-                    HOSTS.map((h) => h.id).join(', '),
+            // No installed host to configure globally — rather than dead-end, fall
+            // back to a project-scoped setup in the current directory so `init`
+            // always produces a usable config. The user can open this folder in
+            // any editor (or copy the workspace file). --global forces the old
+            // behavior for someone who explicitly wants a global-only install.
+            const capable = HOSTS.filter((h) => h.projectConfigPath);
+            targets = capable.map((h) => ({ host: h, configPath: h.projectConfigPath!(cwd) }));
+            console.log(
+                `No installed MCP hosts detected — writing a project-scoped setup in ${cwd} instead:\n` +
+                    `  ${targets.map((t) => t.host.label).join(', ')}\n` +
+                    `  (Run inside a project, or pass --host <id> / --all / --global to target hosts directly.)\n`,
             );
-            return 1;
+        } else {
+            targets = detected.map(({ host, configPath }) => ({ host, configPath }));
+            console.log(`Detected ${targets.length} MCP host(s): ${targets.map((t) => t.host.label).join(', ')}\n`);
         }
-        targets = detected.map(({ host, configPath }) => ({ host, configPath }));
-        console.log(`Detected ${targets.length} MCP host(s): ${targets.map((t) => t.host.label).join(', ')}\n`);
     }
 
     // 2. Device-code flow
