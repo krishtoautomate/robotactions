@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://robotactions.com">
-    <img src="assets/logo-horizontal.svg" alt="Robot Actions" width="420" />
+    <img src="assets/banner.png" alt="Robot Actions — real-device testing for humans and AI agents" />
   </a>
 </p>
 
