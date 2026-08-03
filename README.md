@@ -77,6 +77,14 @@ Watch live HTTP(S) flows from the device, then add rules to mock, abort, or rewr
   <a href="https://github.com/user-attachments/assets/d3e8b177-2983-4940-9bd5-52d945c55bf4">▶ Watch the demo</a>
 </video>
 
+### Mock GPS location
+
+Drop a pin anywhere — search a city or set latitude/longitude — and the device reports that location to any app, so you can test geo-aware flows without leaving your desk.
+
+<video src="https://github.com/user-attachments/assets/d93d160f-6a8e-4210-9d92-f92aa30b1cbb" controls width="640">
+  <a href="https://github.com/user-attachments/assets/d93d160f-6a8e-4210-9d92-f92aa30b1cbb">▶ Watch the demo</a>
+</video>
+
 ### Light & dark themes
 
 The web console follows your preference — switch between light and dark on the fly.
