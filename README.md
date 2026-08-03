@@ -45,6 +45,14 @@ Native-speed touch on a real iPad: playing a game and sketching in Freeform, str
   <a href="https://github.com/krishtoautomate/robotactions/releases/download/readme-assets/ipad-play-draw.mp4">▶ Watch the demo</a>
 </video>
 
+### Real-time mouse & keyboard control
+
+Native-speed pointer and keyboard input on both iOS and Android — type and click straight from your machine with no lag.
+
+<video src="https://github.com/krishtoautomate/robotactions/releases/download/readme-assets/ios-android-mouse-keyboard.mp4" controls width="640">
+  <a href="https://github.com/krishtoautomate/robotactions/releases/download/readme-assets/ios-android-mouse-keyboard.mp4">▶ Watch the demo</a>
+</video>
+
 ### Web Inspector for mobile Safari
 
 Full DevTools — Network, Elements, Console, Application — attached to Safari running on a real iOS device.
