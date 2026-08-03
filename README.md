@@ -53,6 +53,14 @@ Full DevTools — Network, Elements, Console, Application — attached to Safari
   <a href="https://github.com/krishtoautomate/robotactions/releases/download/readme-assets/ios-webinspector.mp4">▶ Watch the demo</a>
 </video>
 
+### Chrome DevTools on Android (CDP)
+
+Full Chrome DevTools over the DevTools Protocol — Elements, Console, Network, Application — inspecting a live page on a real Android device.
+
+<video src="https://github.com/krishtoautomate/robotactions/releases/download/readme-assets/android-devtools.mp4" controls width="640">
+  <a href="https://github.com/krishtoautomate/robotactions/releases/download/readme-assets/android-devtools.mp4">▶ Watch the demo</a>
+</video>
+
 ### Light & dark themes
 
 The web console follows your preference — switch between light and dark on the fly.
