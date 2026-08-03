@@ -69,6 +69,14 @@ Full Chrome DevTools over the DevTools Protocol — Elements, Console, Network, 
   <a href="https://github.com/krishtoautomate/robotactions/releases/download/readme-assets/android-devtools.mp4">▶ Watch the demo</a>
 </video>
 
+### Capture & mock network traffic
+
+Watch live HTTP(S) flows from the device, then add rules to mock, abort, or rewrite matching requests — set the status, headers, and response body on the fly.
+
+<video src="https://github.com/krishtoautomate/robotactions/releases/download/readme-assets/capture-and-mock.mp4" controls width="640">
+  <a href="https://github.com/krishtoautomate/robotactions/releases/download/readme-assets/capture-and-mock.mp4">▶ Watch the demo</a>
+</video>
+
 ### Light & dark themes
 
 The web console follows your preference — switch between light and dark on the fly.
