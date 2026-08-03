@@ -33,56 +33,56 @@ Real iOS and Android devices, streamed live to your browser — no emulators, no
 
 Chat with the built-in AI Agent right inside a device session — ask it to find a defect or suggest improvements, and it drives the device on its own: screenshots, reads the screen, taps and swipes, and reports back findings and recommendations.
 
-<video src="https://github.com/krishtoautomate/robotactions/releases/download/readme-assets/agent-finding-bugs.mp4" controls width="640">
-  <a href="https://github.com/krishtoautomate/robotactions/releases/download/readme-assets/agent-finding-bugs.mp4">▶ Watch the demo</a>
+<video src="https://github.com/user-attachments/assets/83326ac2-2c53-4b47-b7e7-625641064bc0" controls width="640">
+  <a href="https://github.com/user-attachments/assets/83326ac2-2c53-4b47-b7e7-625641064bc0">▶ Watch the demo</a>
 </video>
 
 ### Real-device control — play, draw, anything
 
 Native-speed touch on a real iPad: playing a game and sketching in Freeform, straight from the browser.
 
-<video src="https://github.com/krishtoautomate/robotactions/releases/download/readme-assets/ipad-play-draw.mp4" controls width="280">
-  <a href="https://github.com/krishtoautomate/robotactions/releases/download/readme-assets/ipad-play-draw.mp4">▶ Watch the demo</a>
+<video src="https://github.com/user-attachments/assets/263e71d6-c03b-4753-975e-2c1fa413b64c" controls width="280">
+  <a href="https://github.com/user-attachments/assets/263e71d6-c03b-4753-975e-2c1fa413b64c">▶ Watch the demo</a>
 </video>
 
 ### Real-time mouse & keyboard control
 
 Native-speed pointer and keyboard input on both iOS and Android — type and click straight from your machine with no lag.
 
-<video src="https://github.com/krishtoautomate/robotactions/releases/download/readme-assets/ios-android-mouse-keyboard.mp4" controls width="640">
-  <a href="https://github.com/krishtoautomate/robotactions/releases/download/readme-assets/ios-android-mouse-keyboard.mp4">▶ Watch the demo</a>
+<video src="https://github.com/user-attachments/assets/70ce3e9a-2846-47c5-af42-9c0763ce8419" controls width="640">
+  <a href="https://github.com/user-attachments/assets/70ce3e9a-2846-47c5-af42-9c0763ce8419">▶ Watch the demo</a>
 </video>
 
 ### Web Inspector for mobile Safari
 
 Full DevTools — Network, Elements, Console, Application — attached to Safari running on a real iOS device.
 
-<video src="https://github.com/krishtoautomate/robotactions/releases/download/readme-assets/ios-webinspector.mp4" controls width="640">
-  <a href="https://github.com/krishtoautomate/robotactions/releases/download/readme-assets/ios-webinspector.mp4">▶ Watch the demo</a>
+<video src="https://github.com/user-attachments/assets/dd40cff5-ea4f-4f7f-8495-18027368c54d" controls width="640">
+  <a href="https://github.com/user-attachments/assets/dd40cff5-ea4f-4f7f-8495-18027368c54d">▶ Watch the demo</a>
 </video>
 
 ### Chrome DevTools on Android (CDP)
 
 Full Chrome DevTools over the DevTools Protocol — Elements, Console, Network, Application — inspecting a live page on a real Android device.
 
-<video src="https://github.com/krishtoautomate/robotactions/releases/download/readme-assets/android-devtools.mp4" controls width="640">
-  <a href="https://github.com/krishtoautomate/robotactions/releases/download/readme-assets/android-devtools.mp4">▶ Watch the demo</a>
+<video src="https://github.com/user-attachments/assets/da84182d-70e1-4e77-aa57-5d8a095c133e" controls width="640">
+  <a href="https://github.com/user-attachments/assets/da84182d-70e1-4e77-aa57-5d8a095c133e">▶ Watch the demo</a>
 </video>
 
 ### Capture & mock network traffic
 
 Watch live HTTP(S) flows from the device, then add rules to mock, abort, or rewrite matching requests — set the status, headers, and response body on the fly.
 
-<video src="https://github.com/krishtoautomate/robotactions/releases/download/readme-assets/capture-and-mock.mp4" controls width="640">
-  <a href="https://github.com/krishtoautomate/robotactions/releases/download/readme-assets/capture-and-mock.mp4">▶ Watch the demo</a>
+<video src="https://github.com/user-attachments/assets/d3e8b177-2983-4940-9bd5-52d945c55bf4" controls width="640">
+  <a href="https://github.com/user-attachments/assets/d3e8b177-2983-4940-9bd5-52d945c55bf4">▶ Watch the demo</a>
 </video>
 
 ### Light & dark themes
 
 The web console follows your preference — switch between light and dark on the fly.
 
-<video src="https://github.com/krishtoautomate/robotactions/releases/download/readme-assets/light-dark-switch.mp4" controls width="640">
-  <a href="https://github.com/krishtoautomate/robotactions/releases/download/readme-assets/light-dark-switch.mp4">▶ Watch the demo</a>
+<video src="https://github.com/user-attachments/assets/b5ebee16-9c1a-49db-9487-afc3603c8a83" controls width="640">
+  <a href="https://github.com/user-attachments/assets/b5ebee16-9c1a-49db-9487-afc3603c8a83">▶ Watch the demo</a>
 </video>
 
 > More feature walkthroughs are on the way.
