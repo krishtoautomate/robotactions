@@ -1,0 +1,112 @@
+{
+  "$schema": "https://robotactions.com/schemas/skills-index-v1.json",
+  "version": 1,
+  "name": "robotactions",
+  "title": "RobotActions Agent Skills",
+  "description": "Agent Skills that teach an AI coding agent how to drive real Android and iOS devices and browsers through the RobotActions MCP server.",
+  "homepage": "https://robotactions.com/skills",
+  "repository": "https://github.com/krishtoautomate/robotactions",
+  "license": "MIT",
+  "mcp": {
+    "sse": "https://{tenant}.robotactions.com/mcp/sse",
+    "streamableHttp": "https://{tenant}.robotactions.com/mcp",
+    "auth": "Authorization: Bearer <api-token>",
+    "installer": "npx --yes @robotactions/mcp init",
+    "freeTenant": "test"
+  },
+  "install": {
+    "claudeCode": [
+      "/plugin marketplace add krishtoautomate/robotactions",
+      "/plugin install robotactions@robotactions"
+    ]
+  },
+  "skills": [
+    {
+      "name": "robotactions-getting-started",
+      "title": "Getting started",
+      "description": "Connect an MCP host to the RobotActions device cloud and verify the connection works. Use when RobotActions tools are missing or erroring, when setting up a new machine or CI job, when a call returns 401/403, or when the user asks how to install, configure, or authenticate the RobotActions MCP server.",
+      "path": "skills/robotactions-getting-started",
+      "tags": [
+        "setup",
+        "mcp",
+        "authentication"
+      ],
+      "primaryTools": [
+        "device_list",
+        "device_info",
+        "device_screenshot",
+        "device_release"
+      ],
+      "skillUrl": "https://github.com/krishtoautomate/robotactions/blob/main/skills/robotactions-getting-started/SKILL.md"
+    },
+    {
+      "name": "mobile-app-testing",
+      "title": "Mobile app testing",
+      "description": "Drive real Android and iOS devices to test native mobile apps \u2014 install an app, navigate its UI, assert on what is on screen, and capture evidence. Use when asked to test, explore, reproduce a bug in, or automate a mobile app on a real phone or tablet.",
+      "path": "skills/mobile-app-testing",
+      "tags": [
+        "android",
+        "ios",
+        "mobile",
+        "native-apps"
+      ],
+      "primaryTools": [
+        "device_tap_by_text",
+        "device_type",
+        "device_wait_for_element",
+        "device_page_source",
+        "ios_start_session",
+        "ios_tap_by_label",
+        "ios_page_source",
+        "app_install"
+      ],
+      "skillUrl": "https://github.com/krishtoautomate/robotactions/blob/main/skills/mobile-app-testing/SKILL.md"
+    },
+    {
+      "name": "web-app-testing",
+      "title": "Web app testing",
+      "description": "Test websites and web apps in the browser of a real Android or iOS device, or in a desktop browser on the grid. Use for mobile web testing, responsive checks on real hardware, page network and console debugging, and request mocking.",
+      "path": "skills/web-app-testing",
+      "tags": [
+        "web",
+        "mobile-web",
+        "selenium",
+        "network",
+        "mocking"
+      ],
+      "primaryTools": [
+        "webpage_snapshot",
+        "webpage_click",
+        "webpage_type",
+        "webpage_wait_for",
+        "webpage_mock_add",
+        "android_devtools_capture_network",
+        "web_navigate",
+        "session_create"
+      ],
+      "skillUrl": "https://github.com/krishtoautomate/robotactions/blob/main/skills/web-app-testing/SKILL.md"
+    },
+    {
+      "name": "flow-record-replay",
+      "title": "Flow record & replay",
+      "description": "Turn a manual walkthrough of a mobile app into a saved, replayable regression test \u2014 record steps with assertions, build reusable components, replay on any device, and diagnose failures step by step.",
+      "path": "skills/flow-record-replay",
+      "tags": [
+        "regression",
+        "record-replay",
+        "test-suites",
+        "visual-review"
+      ],
+      "primaryTools": [
+        "flow_recording_start",
+        "flow_recording_action",
+        "flow_recording_save",
+        "flow_replay_start",
+        "flow_replay_summary",
+        "flow_replay_step",
+        "test_suite_run"
+      ],
+      "skillUrl": "https://github.com/krishtoautomate/robotactions/blob/main/skills/flow-record-replay/SKILL.md"
+    }
+  ]
+}
