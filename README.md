@@ -121,6 +121,15 @@ checked.
 procedural knowledge: which tool, in what order, and the mistakes that quietly turn a
 passing test into one that tested nothing.
 
+Install all four into any agent — Claude Code, Cursor, GitHub Copilot, Gemini CLI, Amp and
+a dozen more read the same universal format:
+
+```bash
+npx skills add krishtoautomate/robotactions
+```
+
+Claude Code users can install it as a plugin instead, which also registers the MCP server:
+
 ```
 /plugin marketplace add krishtoautomate/robotactions
 /plugin install robotactions@robotactions

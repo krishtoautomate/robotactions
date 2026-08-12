@@ -1,5 +1,7 @@
 # Robot Actions Agent Skills
 
+[![Agent Skills](https://skills.sh/b/krishtoautomate/robotactions)](https://skills.sh/krishtoautomate/robotactions)
+
 Agent Skills that teach an AI coding agent how to use the [Robot Actions](https://robotactions.com)
 MCP server — real Android and iOS devices, and real browsers, driven from natural language.
 
@@ -11,7 +13,16 @@ Browse them on the site: [robotactions.com/skills](https://robotactions.com/skil
 
 ## Install
 
-### Claude Code
+### Any agent — one command
+
+```bash
+npx skills add krishtoautomate/robotactions
+```
+
+Installs all four skills in a universal format that Claude Code, Cursor, GitHub Copilot,
+Gemini CLI, Amp, Antigravity and a dozen other agents read. Nothing else to configure.
+
+### Claude Code — as a plugin
 
 ```
 /plugin marketplace add krishtoautomate/robotactions
@@ -29,7 +40,7 @@ export ROBOTACTIONS_API_TOKEN="<your-api-token>"
 On a paid tenant, point it at your own subdomain instead — see
 [USING_MCP.md](../USING_MCP.md) or run `npx --yes @robotactions/mcp init`.
 
-### Any other agent
+### By hand
 
 Each skill is a self-contained folder with a `SKILL.md`. Copy the ones you want into
 whatever directory your agent loads skills from:

@@ -15,6 +15,9 @@
     "freeTenant": "test"
   },
   "install": {
+    "universal": [
+      "npx skills add krishtoautomate/robotactions"
+    ],
     "claudeCode": [
       "/plugin marketplace add krishtoautomate/robotactions",
       "/plugin install robotactions@robotactions"
@@ -108,5 +111,6 @@
       ],
       "skillUrl": "https://github.com/krishtoautomate/robotactions/blob/main/skills/flow-record-replay/SKILL.md"
     }
-  ]
+  ],
+  "directory": "https://skills.sh/krishtoautomate/robotactions"
 }
