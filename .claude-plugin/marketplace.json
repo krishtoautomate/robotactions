@@ -1,0 +1,38 @@
+{
+  "name": "robotactions",
+  "owner": {
+    "name": "RobotActions",
+    "email": "support@robotactions.com",
+    "url": "https://robotactions.com"
+  },
+  "metadata": {
+    "description": "Agent Skills for driving real Android and iOS devices and browsers through the Robot Actions MCP server.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "robotactions",
+      "source": "./",
+      "description": "Teach your coding agent to test real mobile apps and websites on the Robot Actions device cloud: connect, drive devices reliably, and record/replay regression flows.",
+      "version": "0.1.0",
+      "author": {
+        "name": "RobotActions",
+        "url": "https://robotactions.com"
+      },
+      "homepage": "https://robotactions.com/skills",
+      "license": "MIT",
+      "keywords": [
+        "mcp",
+        "testing",
+        "qa",
+        "android",
+        "ios",
+        "mobile",
+        "device-farm",
+        "appium",
+        "selenium",
+        "test-automation"
+      ]
+    }
+  ]
+}

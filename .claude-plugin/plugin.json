@@ -1,0 +1,22 @@
+{
+  "name": "robotactions",
+  "description": "Teach your coding agent to test real mobile apps and websites on the Robot Actions device cloud: connect, drive devices reliably, and record/replay regression flows.",
+  "version": "0.1.0",
+  "author": {
+    "name": "RobotActions",
+    "url": "https://robotactions.com"
+  },
+  "homepage": "https://robotactions.com/skills",
+  "repository": "https://github.com/krishtoautomate/robotactions",
+  "license": "MIT",
+  "keywords": [
+    "mcp",
+    "testing",
+    "qa",
+    "android",
+    "ios",
+    "mobile",
+    "device-farm",
+    "test-automation"
+  ]
+}
