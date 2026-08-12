@@ -70,10 +70,10 @@ So "my mock isn't firing" is usually one of those two, not a wrong `matchUrl`. C
 traffic is visible in `android_traffic_flows` *before* concluding a route is wrong: if
 capture shows nothing, mocking was never going to work.
 
-On Android there are two install modes. When the device management component is Device
-Owner the proxy and CA are installed **silently** (`installMode: "dpc"`, no on-device
-interaction); otherwise it falls back to a global proxy and relies on the app already
-trusting user certs. The response tells you which happened — read it.
+On Android, some devices are provisioned so that the proxy and its certificate are set up
+silently with no on-device interaction; on others the setup falls back to a mode that
+relies on the app already trusting user certificates. The start response reports which
+path was taken — read it, because it tells you whether limit 1 above applies to this run.
 
 ### Packet capture
 
