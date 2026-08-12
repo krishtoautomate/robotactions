@@ -197,16 +197,14 @@ webpage_mock_add(udid, matchUrl: "/api/cart", matchType: "contains",
 webpage_mock_list / webpage_mock_remove / webpage_mock_clear / webpage_mock_status
 ```
 
-`mode: "abort"` fails the request instead, so the page sees a network error — the way to
-test error states without a broken backend. `delayMs` injects latency for loading states.
-
-Routes apply immediately and survive navigation. Omit `pageId` so routing follows the
+`mode: "abort"` fails the request instead, for error states without a broken backend.
+Routes apply immediately and survive navigation — omit `pageId` so routing follows the
 active page across navigations and new tabs.
 
 **Scope matters:** this intercepts requests from **browser and WebView pages only**.
-Requests made by native app code are not intercepted and never will be by this tool —
-use `android_traffic_mock_add` / `ios_traffic_mock_add` for those. Nothing device-wide
-changes and no certificate is installed.
+Requests made by native app code are not intercepted and never will be by this tool.
+For those, and for the full treatment of capture, throttling and offline paths, see the
+**`network-mocking`** skill.
 
 ## Desktop grid browser
 

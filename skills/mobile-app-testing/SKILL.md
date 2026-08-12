@@ -152,9 +152,30 @@ device_release(udid)
 
 Holds count against your parallel-device limit. Release on the failure path too.
 
+## Input goes straight to the device
+
+Taps and keystrokes are delivered through the device's own input path, not routed through
+a separate automation framework layer. On iOS the `*_hid` tools need no automation
+session at all (`ios_hid_status` reports availability), and in the device browser
+`webpage_click` makes the device tap its own screen — a genuinely trusted touch that
+satisfies targets which reject synthesized events.
+
+You do not need a framework session to drive a device. One is available when you want
+framework parity — see the `framework-integration` skill.
+
+## Related skills
+
+| For | Skill |
+|---|---|
+| Pushing a file so an upload picker has something to pick; location, locale, dark mode, clean app state | `device-state-setup` |
+| Mocking or capturing native app traffic, and error/offline/slow-network states | `network-mocking` |
+| Writing this up as an Appium/Selenium/WebdriverIO test, or running an existing suite | `framework-integration` |
+| Saving the walkthrough as a replayable regression test | `flow-record-replay` |
+| Testing a website or WebView rather than native UI | `web-app-testing` |
+
 ## Deeper reference
 
 - `references/android.md` — full Android tool map, gestures, hardware keys, app data,
-  language and location, shell access
+  shell access
 - `references/ios.md` — session lifecycle, label-first interaction, hardware buttons,
   HID vs automation input, files and diagnostics

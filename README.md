@@ -140,6 +140,9 @@ Claude Code users can install it as a plugin instead, which also registers the M
 | [robotactions-getting-started](skills/robotactions-getting-started/SKILL.md) | Connect, authenticate, verify, device holds and the parallel limit |
 | [mobile-app-testing](skills/mobile-app-testing/SKILL.md) | Driving native Android and iOS apps on real hardware |
 | [web-app-testing](skills/web-app-testing/SKILL.md) | The web on a real device browser or the desktop grid |
+| [device-state-setup](skills/device-state-setup/SKILL.md) | Files for upload flows, GPS, locale, dark mode, clean app state |
+| [network-mocking](skills/network-mocking/SKILL.md) | Mocking and capturing traffic — native app requests as well as web |
+| [framework-integration](skills/framework-integration/SKILL.md) | Using the tools with an existing Appium/Selenium/Playwright suite |
 | [flow-record-replay](skills/flow-record-replay/SKILL.md) | Recording replayable regression tests with assertions |
 
 Not a Claude Code user? Each skill is a plain folder with a `SKILL.md` — copy what you
