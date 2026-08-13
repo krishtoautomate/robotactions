@@ -121,12 +121,15 @@ checked.
 procedural knowledge: which tool, in what order, and the mistakes that quietly turn a
 passing test into one that tested nothing.
 
-Install all four into any agent — Claude Code, Cursor, GitHub Copilot, Gemini CLI, Amp and
-a dozen more read the same universal format:
+Install into any agent — Claude Code, Cursor, GitHub Copilot, Codex, Cline, Zed and 50+
+more read the same universal format:
 
 ```bash
-npx skills add krishtoautomate/robotactions
+npx skills add https://robotactions.com
 ```
+
+Run without flags and it asks which skills and which agents you want. To choose up front,
+`--list` shows what is available without installing, and `--skill <name>` takes just one.
 
 Claude Code users can install it as a plugin instead, which also registers the MCP server:
 
