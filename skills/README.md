@@ -16,11 +16,31 @@ Browse them on the site: [robotactions.com/skills](https://robotactions.com/skil
 ### Any agent — one command
 
 ```bash
-npx skills add krishtoautomate/robotactions
+npx skills add https://robotactions.com
 ```
 
-Installs all four skills in a universal format that Claude Code, Cursor, GitHub Copilot,
-Gemini CLI, Amp, Antigravity and a dozen other agents read. Nothing else to configure.
+Served from our own domain via [RFC 8615](https://www.rfc-editor.org/rfc/rfc8615)
+discovery. Run it without flags and it asks **which skills and which agents** you want —
+you are not signing up for all seven.
+
+Prefer to choose from the command line:
+
+```bash
+# see what is on offer, install nothing
+npx skills add https://robotactions.com --list
+
+# install only what you need
+npx skills add https://robotactions.com --skill mobile-app-testing
+```
+
+They install in a universal format read by Claude Code, Cursor, GitHub Copilot, Codex,
+Cline, Zed, Amp, Continue and 50+ other agents. Nothing else to configure.
+
+Same skills straight from this repo, if you would rather pin to the source:
+
+```bash
+npx skills add krishtoautomate/robotactions
+```
 
 ### Claude Code — as a plugin
 
@@ -29,7 +49,7 @@ Gemini CLI, Amp, Antigravity and a dozen other agents read. Nothing else to conf
 /plugin install robotactions@robotactions
 ```
 
-The plugin bundles all four skills **and** an MCP server entry, so installing it also
+The plugin bundles every skill **and** an MCP server entry, so installing it also
 registers the server. That entry targets the shared free `test` tenant and reads your
 token from `ROBOTACTIONS_API_TOKEN`:
 
@@ -51,7 +71,8 @@ cp -r robotactions/skills/* ~/.claude/skills/
 ```
 
 A machine-readable index of every skill lives at [`skills.json`](../skills.json) in the
-repo root.
+repo root. Each skill also renders as a page at
+[robotactions.com/skills](https://robotactions.com/skills).
 
 ## The skills
 
@@ -64,6 +85,12 @@ repo root.
 | [**network-mocking**](network-mocking/SKILL.md) | Capture and mock traffic for native app requests as well as web pages — error, empty, offline and slow-network states without a broken backend. |
 | [**framework-integration**](framework-integration/SKILL.md) | Use the MCP tools alongside an existing Appium, Selenium, Playwright or WebdriverIO suite: lift stable locators into page objects, emit tests in their framework, run the suite on the grid. |
 | [**flow-record-replay**](flow-record-replay/SKILL.md) | Record a walkthrough as a replayable regression test with assertions, build reusable components, replay across devices, diagnose failures step by step. |
+
+Install any one of them on its own:
+
+```bash
+npx skills add https://robotactions.com --skill <name>
+```
 
 ## You still need an MCP connection
 
