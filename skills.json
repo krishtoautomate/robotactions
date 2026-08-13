@@ -90,6 +90,72 @@
       "skillUrl": "https://github.com/krishtoautomate/robotactions/blob/main/skills/web-app-testing/SKILL.md"
     },
     {
+      "name": "device-state-setup",
+      "title": "Device state setup",
+      "description": "Put a real device into the state a test needs \u2014 push files so an upload or file-picker flow has something to pick, seed an app's own container with fixtures, mock GPS location, force a locale, and reset to a clean first-run state.",
+      "path": "skills/device-state-setup",
+      "skillUrl": "https://github.com/krishtoautomate/robotactions/blob/main/skills/device-state-setup/SKILL.md",
+      "tags": [
+        "files",
+        "upload",
+        "location",
+        "localization",
+        "app-state"
+      ],
+      "primaryTools": [
+        "device_file_push",
+        "ios_file_push",
+        "device_set_location",
+        "device_launch_app_in_language",
+        "device_clear_app_data",
+        "device_file_pull"
+      ]
+    },
+    {
+      "name": "network-mocking",
+      "title": "Network mocking & capture",
+      "description": "Capture and mock network traffic on real devices, for native app requests as well as web pages. Use for error states, empty states, offline paths and slow-network testing without a broken backend.",
+      "path": "skills/network-mocking",
+      "skillUrl": "https://github.com/krishtoautomate/robotactions/blob/main/skills/network-mocking/SKILL.md",
+      "tags": [
+        "network",
+        "mocking",
+        "traffic",
+        "offline",
+        "native"
+      ],
+      "primaryTools": [
+        "android_traffic_start",
+        "android_traffic_mock_add",
+        "ios_traffic_start",
+        "ios_traffic_mock_add",
+        "webpage_mock_add",
+        "android_devtools_capture_network"
+      ]
+    },
+    {
+      "name": "framework-integration",
+      "title": "Framework integration",
+      "description": "Use the MCP tools alongside an existing Appium, Selenium, Playwright or WebdriverIO suite rather than replacing it \u2014 lift stable locators into page objects, emit tests in the user's own framework, and run that suite against the grid.",
+      "path": "skills/framework-integration",
+      "skillUrl": "https://github.com/krishtoautomate/robotactions/blob/main/skills/framework-integration/SKILL.md",
+      "tags": [
+        "appium",
+        "selenium",
+        "playwright",
+        "webdriverio",
+        "codegen",
+        "ci"
+      ],
+      "primaryTools": [
+        "device_locators_for",
+        "ios_find_element",
+        "session_create",
+        "session_execute",
+        "session_quit"
+      ]
+    },
+    {
       "name": "flow-record-replay",
       "title": "Flow record & replay",
       "description": "Turn a manual walkthrough of a mobile app into a saved, replayable regression test \u2014 record steps with assertions, build reusable components, replay on any device, and diagnose failures step by step.",

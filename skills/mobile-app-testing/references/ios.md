@@ -129,13 +129,10 @@ ios_file_delete / ios_file_mkdir
 ios_upload_targets(udid)              where uploads are allowed to land
 ```
 
-## Localization and location
+## Localization, location, files and app state
 
-```
-ios_set_device_language(udid, ...)
-ios_launch_app_in_language(udid, bundleId, ...)
-ios_set_location(udid, ...) / ios_get_location(udid) / ios_clear_location(udid)
-```
+See the **`device-state-setup`** skill — pushing files (including into an app's own
+container), mocking GPS, forcing a locale, and resetting app state, for both platforms.
 
 ## Capture
 
@@ -151,8 +148,8 @@ ios_record_start / ios_record_stop / ios_record_cleanup
 
 - **Safari web content** — `ios_safari_*` (DOM, console, network capture, evaluate,
   cookies, mocking). See the `web-app-testing` skill.
-- **Network traffic** — `ios_traffic_*`, plus `ios_pcap_start/stop/status` for a packet
-  capture.
+- **Network traffic** — `ios_traffic_*` decrypts and mocks native app HTTPS; `ios_pcap_*`
+  for a raw packet capture. See the **`network-mocking`** skill.
 - **Performance** — `ios_fps`, `ios_app_launch_time`, `ios_performance_snapshot`,
   `ios_performance_record_start/stop`.
 - **Crashes** — `ios_crash_list`, `ios_crash_detail`, `ios_crash_analytics`,

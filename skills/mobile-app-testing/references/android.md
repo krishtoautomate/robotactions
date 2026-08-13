@@ -125,27 +125,11 @@ device_file_push(udid, ...)
 device_file_pull(udid, ...)
 ```
 
-## Localization and location
+## Localization, location, files and app state
 
-```
-device_launch_app_in_language(udid, packageName, locale)   Android 13+ (API 33).
-    Forces ONE app into a locale without touching device settings. Force-stops the
-    app first so the cold launch picks it up. Prefer this for localization testing.
-
-device_set_device_language(udid, language, country, script)
-    Changes the whole device, persistent, survives reboot. Caveats: some
-    manufacturer skins re-apply their own locale after a few seconds; MDM-managed
-    devices may refuse the permission grant.
-
-device_clear_app_locale(udid, packageName)
-
-device_set_location(udid, latitude, longitude, accuracy)   API 26+
-device_clear_location(udid)
-```
-
-Mock location is visible to apps that check `Location.isFromMockProvider` — banking,
-ride-share, and some games will detect it and refuse. That is an OS-level signal, not
-something the platform can hide. Plan geo tests around apps that do not gate on it.
+Moved to the **`device-state-setup`** skill, which covers pushing files for upload flows,
+seeding an app container, mocking GPS, forcing a locale, dark mode, and resetting to a
+clean first-run state — for both platforms in one place.
 
 ## Capture
 
@@ -164,8 +148,8 @@ Other Android tool families, each worth reading its own tool descriptions before
 
 - **Web content in Chrome on the device** — `android_devtools_*` (DOM, console,
   network capture, evaluate, cookies, request mocking). See the `web-app-testing` skill.
-- **Network traffic** — `android_traffic_start/stop/status`, `android_traffic_flows`,
-  `android_traffic_mock_*` for capturing and stubbing app traffic.
+- **Network traffic** — `android_traffic_*` decrypts and mocks native app HTTPS. See the
+  **`network-mocking`** skill.
 - **Performance** — `android_fps`, `android_app_launch_time`,
   `android_performance_snapshot`, `android_performance_record_start/stop`.
 - **Crashes** — `android_crash_analytics`, `android_crash_detail`.

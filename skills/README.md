@@ -59,7 +59,10 @@ repo root.
 |---|---|
 | [**robotactions-getting-started**](robotactions-getting-started/SKILL.md) | Connect an MCP host to the device cloud, authenticate, verify with a real device, understand device holds and the parallel limit. |
 | [**mobile-app-testing**](mobile-app-testing/SKILL.md) | Drive native Android and iOS apps: install, locate elements without guessing coordinates, type without racing focus, wait properly, assert on what is actually on screen. |
-| [**web-app-testing**](web-app-testing/SKILL.md) | Test the web on a real device browser or the desktop grid: snapshot-and-ref interaction, verified clicks, network capture, request mocking. |
+| [**web-app-testing**](web-app-testing/SKILL.md) | Test the web on a real device browser or the desktop grid: snapshot-and-ref interaction, verified clicks, page network capture. |
+| [**device-state-setup**](device-state-setup/SKILL.md) | Put the device into the state the test needs: push files so an upload picker has something to pick, seed an app's own container, mock GPS, force a locale, dark mode, clean app state. |
+| [**network-mocking**](network-mocking/SKILL.md) | Capture and mock traffic for native app requests as well as web pages — error, empty, offline and slow-network states without a broken backend. |
+| [**framework-integration**](framework-integration/SKILL.md) | Use the MCP tools alongside an existing Appium, Selenium, Playwright or WebdriverIO suite: lift stable locators into page objects, emit tests in their framework, run the suite on the grid. |
 | [**flow-record-replay**](flow-record-replay/SKILL.md) | Record a walkthrough as a replayable regression test with assertions, build reusable components, replay across devices, diagnose failures step by step. |
 
 ## You still need an MCP connection
