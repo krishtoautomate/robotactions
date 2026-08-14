@@ -1,6 +1,6 @@
 ---
 name: web-app-testing
-description: Test websites and web apps on the RobotActions grid — in the browser of a real Android or iOS device, or in a desktop browser on the grid. Use when asked to test a site on mobile Safari or Chrome, check responsive behaviour on a real phone, debug page network requests or console errors on a device, mock an API response, or automate a browser with webpage_*, web_*, or session_* tools.
+description: Test websites and web apps on the RobotActions grid — in the browser of a real Android or iOS device, or in a desktop browser on the grid. Use when asked to test a site on mobile Safari or Chrome, check responsive behaviour on a real phone, debug page network requests or console errors on a device, mock an API response, extract CSS/XPath locators to hand to a Playwright or Selenium suite, send a raw DevTools-protocol command, or automate a browser with webpage_*, web_*, *_devtools_*, ios_safari_*, or session_* tools.
 license: MIT
 ---
 
@@ -66,6 +66,34 @@ wanted. Useful options:
 
 When a CSS selector matches several elements, `webpage_click` takes the first **visible**
 one, not the first in document order.
+
+## Locators you can take elsewhere
+
+`webpage_snapshot` is the right tool for driving the page here. When you need locators
+that outlive this session — to hand to a Playwright or Selenium suite — use the
+extractor instead:
+
+```
+android_devtools_elements(udid)      ios_safari_elements(udid)
+```
+
+Each record carries a unique-ish **CSS selector and an XPath**, plus tag, text, key
+attributes, bounding box and visibility, and optionally computed styles. Same script on
+both engines, so the output is identical in shape on Chrome and on Safari.
+
+Every record also carries a `ref`, the same addressing `webpage_snapshot` returns. Two
+things a selector cannot do and a ref can:
+
+- reach inside a **shadow root or a child frame** — `document.querySelector()` will never
+  resolve those from the top-level document
+- stay unambiguous on markup with no stable ids, where a generated
+  `:nth-of-type()` chain goes stale between the read and the action
+
+Refs are minted per page, monotonic, and **never reused**: an old ref resolves to the
+element it originally named or fails outright. It cannot silently point at a different
+element after a re-extraction. Resolution also requires the node to still be connected,
+which catches elements detached by a soft SPA navigation; a hard reload discards the
+store entirely. The store keeps 2000 refs per page, evicting oldest first.
 
 ## Clicking is verified, not fire-and-forget
 
@@ -151,7 +179,24 @@ Stale tabs accumulate across sessions. Close what you are done with (on Android)
 
 ## Debugging a page: console, network, DOM
 
-Per-platform DevTools families: `android_devtools_*` and `ios_safari_*`. Same shape.
+Per-platform DevTools families: `android_devtools_*` and `ios_safari_*`. Same shape —
+and the sameness is real, not a wrapper convenience. Inspection on both platforms speaks
+the **Chrome DevTools Protocol**: Android against Chrome directly, iOS through a
+per-device bridge that serves CDP over Safari's Web Inspector. The same sequence of calls
+works on either platform, which is what makes driving a real phone feel like driving a
+desktop browser.
+
+Two places that parity does **not** hold, both worth knowing before you trust a result:
+
+- **Request interception.** There is no CDP Fetch equivalent on the iOS side, so mocking
+  drives WebKit's own interception commands underneath (iOS 14.0+). The dedicated mock
+  tools — `webpage_mock_*`, which routes by udid on both platforms — hide that difference.
+  Reaching for interception through the raw escape hatch below does not.
+- **Web content only.** These reach pages in Chrome / debuggable WebViews and
+  Safari / WKWebViews. Native app traffic (URLSession, OkHttp) is invisible here and
+  always will be — that is `android_traffic_*` / `ios_traffic_*`. Mocking a native
+  endpoint at this layer watches the request sail straight through, with no error to
+  explain why.
 
 ```
 android_devtools_console_logs(udid)      ios_safari_console_logs(udid)
@@ -187,6 +232,26 @@ Other things worth knowing:
   200k total, with `bodyTruncated` / `bodiesOmitted` telling you what was dropped.
 - Default window 5000ms, max 30000ms. Default 100 records, most-recent first — filter
   with `urlSubstring` / `onlyErrors` on heavy pages.
+
+### The escape hatch
+
+Every tool above wraps one protocol call behind a friendly schema. When you need a
+capability nobody wrapped — Emulation, Performance, CSS, Animation, DOM mutation — forward
+the call yourself:
+
+```
+webpage_cdp_command(udid, method: "Emulation.setGeolocationOverride", params: { … })
+```
+
+It is bounded by the browser on both platforms, not device-level. Two traps:
+
+- **A request paused raw stays frozen until you answer it.** The mock tools own that
+  lifecycle; a bare command does not. If you arm interception this way and walk away, that
+  load hangs.
+- **On iOS, `*.enable` lies.** The bridge absorbs enable calls without forwarding them, so
+  `Accessibility.enable` returns a cheerful OK for a domain that does not exist — and the
+  next call fails with `-32601 domain was not found`. Do not treat an `.enable` reply on
+  iOS as proof the capability is there. The tool attaches that caveat to every one.
 
 ## Mocking
 
