@@ -1,6 +1,6 @@
 ---
 name: web-app-testing
-description: Test websites and web apps on the RobotActions grid — in the browser of a real Android or iOS device, or in a desktop browser on the grid. Use when asked to test a site on mobile Safari or Chrome, check responsive behaviour on a real phone, debug page network requests or console errors on a device, mock an API response, extract CSS/XPath locators to hand to a Playwright or Selenium suite, send a raw DevTools-protocol command, or automate a browser with webpage_*, web_*, *_devtools_*, ios_safari_*, or session_* tools.
+description: Test websites and web apps on the RobotActions grid — in the browser of a real Android or iOS device, or in a desktop browser on the grid. Use when asked to test a site on mobile Safari or Chrome, check responsive behaviour on a real phone, debug page network requests or console errors on a device, mock an API response, test a file-upload flow past iOS's native picker, extract CSS/XPath locators to hand to a Playwright or Selenium suite, send a raw DevTools-protocol command, or automate a browser with webpage_*, web_*, *_devtools_*, ios_safari_*, or session_* tools.
 license: MIT
 ---
 
@@ -148,6 +148,25 @@ focus** through the form. Where that surface is unavailable it falls back to a
 synthesized event that does not move focus — but for Enter inside a `<form>` it also
 calls `requestSubmit()`, so submission still fires. Check `via`.
 
+## Uploading a file (iOS)
+
+```
+ios_safari_set_input_files(udid, selector: "input[type=file]",
+                           files: [{ name: "contacts.csv", text: "name,email\nA,a@x.io" }])
+```
+
+Tapping an upload control on iOS opens a native Files/Photos sheet that no web automation
+surface can drive, so the tap just blocks. This attaches the files to the input directly —
+the picker never opens — then fires `input` and `change`, because assigning the file list
+alone updates the DOM without notifying any framework binding or validator, which looks
+exactly like an upload the app never noticed.
+
+It then reads the list back **off the input** and reports the names, sizes and MIME types
+the page actually sees, so a silent no-op cannot pass as success.
+
+Content comes from `text`, from `contentBase64` for binary, or from `devicePath` for a file
+already on the device (`ios_file_push`). 2 MB total; `index` picks among several matches.
+
 ## Waiting
 
 ```
@@ -205,6 +224,53 @@ android_devtools_evaluate(udid, ...)     ios_safari_evaluate(udid, ...)
 android_devtools_cookies(udid)           ios_safari_cookies(udid)
 android_devtools_list_pages(udid)        ios_safari_list_pages(udid)
 ```
+
+### Evaluate reads the page — it does not click it
+
+A click dispatched from JavaScript — `el.click()`, or a synthesized `MouseEvent` — is an
+**untrusted** event (`isTrusted: false`). Component frameworks, and anything gated on a real
+user gesture (file pickers, clipboard, autoplay, anti-bot checks), may ignore it while the
+evaluate still succeeds: a failure shaped like a passing call. Click with `webpage_click`
+and type with `webpage_type`, which have the device act on its own screen.
+
+When the read follows an action, wait **inside** the same call rather than splitting it into
+a poll and a read:
+
+```
+ios_safari_evaluate(udid, expression: "…",
+                    waitForSelector: "#menu", waitTimeoutMs: 5000, waitMs: 200)
+```
+
+Frameworks paint a frame or two after the click that triggers them, so an evaluate fired
+immediately reads the DOM before the menu, overlay or row exists. A selector that never
+appears **errors** instead of evaluating anyway and handing back a `null` that reads like a
+finding. `waitForSelector` polls for `waitTimeoutMs` (default 5000, max 15000); `waitMs`
+(max 10000) settles animation afterwards. Both wait on the same tab in the same session —
+a separate poll call re-runs the whole page walk and can land on different state.
+
+### The tab you navigated to is the tab you get (iOS)
+
+`ios_safari_navigate` pins the page it landed on and reports its `pageId`. Every later
+id-less `ios_safari_*` call runs on that pinned page **or errors, naming both tabs and both
+URLs**. It will not quietly fall through to another tab — a well-formed answer from the
+wrong page is worse than a failure, because nothing downstream can tell it from the truth.
+Pass `pageId` only when you mean a different tab.
+
+Only the frontmost tab is inspectable: a backgrounded tab is throttled and times out even
+though its `pageId` is still valid. Bring it to the front on the device, or navigate again.
+`ios_safari_evaluate` also returns a second block naming the tab it ran on — read it when a
+result looks like it came from somewhere else.
+
+### When nothing on the page responds
+
+Two causes look identical from off-device, and only one of them is about the device:
+
+- it is asleep or locked, so the page context is suspended
+- a page-modal `alert` / `confirm` / `prompt` is open, blocking the page's JS thread
+
+Both kill every probe on the command timeout. **Take a screenshot** — that is what separates
+them. A dialog has to be dismissed on the device before any tool can drive the page, and
+waking a device that was never asleep changes nothing.
 
 ### Network capture is a live window — use triggerJs
 
