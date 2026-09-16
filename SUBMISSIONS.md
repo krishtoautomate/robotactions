@@ -99,6 +99,57 @@ Anthropic does not currently maintain an official Claude Desktop MCP directory �
 
 ---
 
+## 🟡 Glama (glama.ai) — and the awesome-mcp-servers gate
+
+Two **separate** records on Glama, and the difference is the whole problem:
+
+| Record | Path | State |
+|---|---|---|
+| **Connector** (hosted endpoint) | `/mcp/connectors/com.robotactions.test/robot-actions-remote-device-control` | listed, verified, quality **B / 3.1**, scored 2026-08-29 over 333 tools |
+| **Server** (GitHub repo) | `/mcp/servers/krishtoautomate/robotactions` | **404 — never indexed** |
+
+`punkpeye/awesome-mcp-servers` gates every merge on the *server* record: the
+required badge is `https://glama.ai/mcp/servers/OWNER/REPO/badges/score.svg`,
+which today renders "This MCP server is not listed on Glama". The connector
+listing does not satisfy it — the two other connector-backed entries in that
+README (`Pactlio-ai/pactlio-mcp`, `joelgombin/andre-mcp`) both carry a *server*
+badge and only mention their connector in the prose.
+
+**Action — manual (one-time, needs GitHub OAuth)**:
+
+1. Sign in at <https://glama.ai/mcp/servers> with GitHub
+2. Add `https://github.com/krishtoautomate/robotactions`
+3. Wait for the quality score to be evaluated — any grade merges; ours already
+   scores B as a connector
+
+`glama.json` (this commit) declares `krishtoautomate` as maintainer, which is
+how Glama claims a repo — schema: <https://glama.ai/mcp/schemas/server.json>.
+It also clears the `glama.json not found (HTTP 404)` error currently showing on
+the connector record.
+
+**Then** add the badge to the awesome-mcp-servers PR entry, between the GitHub
+link and the description:
+
+```
+[![krishtoautomate/robotactions MCP server](https://glama.ai/mcp/servers/krishtoautomate/robotactions/badges/score.svg)](https://glama.ai/mcp/servers/krishtoautomate/robotactions)
+```
+
+**Connector health**: the record read **Unhealthy** at 2026-09-16 18:08 UTC.
+Glama probes the endpoint without a token, and bearer auth is required, so a
+401 may simply read as unhealthy — but confirm that, rather than assuming it.
+
+---
+
+## 🟡 punkpeye/awesome-mcp-servers
+
+**Status**: PR [#12622](https://github.com/punkpeye/awesome-mcp-servers/pull/12622), open since 2026-08-21.
+Entry sits at the top of `### 💻 Developer Tools`.
+
+Rebased onto upstream `main` on 2026-09-16 (the README churns constantly — 2,175
+open PRs — so expect to redo this). Blocked only on the Glama server record above.
+
+---
+
 ## Maintenance
 
 When `server.json` changes (new version, new transport, schema bump), re-run the verify curl above. When the npm package version bumps, no registry resubmission needed — registries point at the repo, not the package.
