@@ -105,22 +105,31 @@ Two **separate** records on Glama, and the difference is the whole problem:
 
 | Record | Path | State |
 |---|---|---|
-| **Connector** (hosted endpoint) | `/mcp/connectors/com.robotactions.test/robot-actions-remote-device-control` | listed, verified, quality **B / 3.1**, scored 2026-08-29 over 333 tools |
+| **Connector** (hosted endpoint) | `/mcp/connectors/com.robotactions.test/robot-actions-remote-device-control` | listed, verified, quality **A / 3.6**, re-scored 2026-09-17 over 364 tools (was B / 3.1 over 333 on 2026-08-29) |
 | **Server** (GitHub repo) | `/mcp/servers/krishtoautomate/robotactions` | **404 — never indexed** |
 
-`punkpeye/awesome-mcp-servers` gates every merge on the *server* record: the
-required badge is `https://glama.ai/mcp/servers/OWNER/REPO/badges/score.svg`,
-which today renders "This MCP server is not listed on Glama". The connector
-listing does not satisfy it — the two other connector-backed entries in that
+`punkpeye/awesome-mcp-servers` gates every merge on a Glama badge. The server
+badge — `https://glama.ai/mcp/servers/OWNER/REPO/badges/score.svg` — renders
+"This MCP server is not listed on Glama" for us, because the repo record does
+not exist. The **connector** has its own badge, which does resolve:
+
+```
+https://glama.ai/mcp/connectors/com.robotactions.test/robot-actions-remote-device-control/badges/score.svg
+```
+
+That is what the PR carries, and their `check-submission` CI passes with it. It
+renders "Robot Actions — Remote Device Control – MCP connector rated A on
+Glama". Whether punkpeye accepts a connector badge in place of a server one is
+the open question on the PR; the two other connector-backed entries in that
 README (`Pactlio-ai/pactlio-mcp`, `joelgombin/andre-mcp`) both carry a *server*
-badge and only mention their connector in the prose.
+badge and mention their connector only in the prose.
 
 **Action — manual (one-time, needs GitHub OAuth)**:
 
 1. Sign in at <https://glama.ai/mcp/servers> with GitHub
 2. Add `https://github.com/krishtoautomate/robotactions`
 3. Wait for the quality score to be evaluated — any grade merges; ours already
-   scores B as a connector
+   scores A as a connector
 
 `glama.json` (this commit) declares `krishtoautomate` as maintainer, which is
 how Glama claims a repo — schema: <https://glama.ai/mcp/schemas/server.json>.
@@ -134,9 +143,26 @@ link and the description:
 [![krishtoautomate/robotactions MCP server](https://glama.ai/mcp/servers/krishtoautomate/robotactions/badges/score.svg)](https://glama.ai/mcp/servers/krishtoautomate/robotactions)
 ```
 
-**Connector health**: the record read **Unhealthy** at 2026-09-16 18:08 UTC.
-Glama probes the endpoint without a token, and bearer auth is required, so a
-401 may simply read as unhealthy — but confirm that, rather than assuming it.
+**Connector health**: the record reads **Unhealthy**, and that is expected
+rather than broken. The endpoint answers in ~0.3s with a spec-correct 401 plus
+`WWW-Authenticate` and resolvable discovery metadata, and dynamic client
+registration works — but `grant_types_supported` is authorization_code and
+refresh_token only, so an unattended prober can never mint a token and never
+reaches `initialize`. The record's own `oauthRegistration` is null, confirming
+it never got that far. The fix is on Glama's side: the connector carries a
+`testMcpConnectionProfileId`, which is where credentials for health checks
+attach once the connector is claimed.
+
+**What moved the grade** (B / 3.1 → A / 3.6, disambiguation 2/5 → 3/5): the
+three MCP PRs merged 2026-09-16/17 — RemoteDeviceServer #1864 (stop publishing
+15 `playwright_*` aliases and three stack names), #1866 (collapse 17 gesture
+twins into an `input` mode), #1868 (describe the `session_*` family, rename
+`session_url` to `session_navigate`). The scored card went 396 → 364 tools.
+
+Note the card Glama reads is `enterprise.robotactions.com`, which serves the
+current build (364 tools). `test.robotactions.com` is a separate, older
+deployment and still served 393 when this was written — do not use it to check
+whether a card change has shipped.
 
 ---
 
@@ -145,8 +171,11 @@ Glama probes the endpoint without a token, and bearer auth is required, so a
 **Status**: PR [#12622](https://github.com/punkpeye/awesome-mcp-servers/pull/12622), open since 2026-08-21.
 Entry sits at the top of `### 💻 Developer Tools`.
 
-Rebased onto upstream `main` on 2026-09-16 (the README churns constantly — 2,175
-open PRs — so expect to redo this). Blocked only on the Glama server record above.
+Rebased onto upstream `main` twice on 2026-09-16 (the README churns constantly —
+2,175 open PRs — so expect to redo this). The entry carries the connector badge
+and their `check-submission` CI is green, so nothing is blocked on us; it is
+waiting on a maintainer to say whether a connector badge satisfies the gate, or
+on the repo being indexed so a server badge can replace it.
 
 ---
 
