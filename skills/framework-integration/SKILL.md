@@ -61,14 +61,21 @@ Existing Appium/Selenium/WebdriverIO suites point at the grid by changing the en
 and adding a token — the tests themselves do not change.
 
 Ready-to-run templates for each framework, including the connection recipe:
-**https://github.com/krishtoautomate/robotactions-automation**
+**https://github.com/RobotActions/robotactions-automation**
 
 | Template | Stack |
 |---|---|
 | `appium-js` | Appium + JavaScript |
-| `selenium-python` | Selenium + pytest-bdd — grid browsers, mobile web, real devices |
+| `appwright` | Appwright (Playwright runner over Appium) — phones **and Apple TV / Android TV**, with a platform-neutral `remote` fixture for set-top input |
+| `selenium-java` / `selenium-python` | Selenium — grid browsers, mobile web, real devices |
 | `wdio` | WebdriverIO + TypeScript — grid browsers, mobile web, real devices |
 | `playwright` / `playwright-python` | Playwright against grid browsers |
+| `espresso` / `xctest` | Native instrumentation on the grid's devices |
+
+TV is ordinary Appium: XCUITest as `platformName: tvOS` on Apple TV; UiAutomator2 with
+`appium:deviceClass: TV` on Android TV, Google TV and Chromecast. Locators carry over from
+the phone drivers; input is the remote — `mobile: pressButton` (`Up`, `Select`, `Menu`…)
+on Apple TV, key codes (`DPAD_DOWN` 20, `DPAD_CENTER` 23, `BACK` 4) on Android.
 
 Configuration is environment-driven — `GRID_URL`, `AUTH_TOKEN`, `RA_TESTSUITE`. The token
 rides the URL path for Selenium/Appium and a query parameter for Playwright's WebSocket
