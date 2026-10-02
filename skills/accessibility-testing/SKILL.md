@@ -28,17 +28,27 @@ reader** shows that.
    Ordinary taps and tap-by-label tools work normally only while it is off.
 3. AUDIT    android_accessibility_audit / ios_accessibility_audit
             Let the screen settle first — an audit mid-animation under-reports.
-4. TURN ON  android_talkback(action: 'enable') / ios_voiceover(action: 'start')
-5. WALK     action: 'next', repeatedly. Record every `text` in order.
-            Stop when the focus stops moving (see "End of screen").
-6. CHECK    the transcript — see "What to look for"
-7. ACTIVATE land on a control with 'next', then action: 'activate'.
-            Confirm the app actually responded (page source / screenshot).
-8. TURN OFF android_talkback(action: 'disable') / ios_voiceover(action: 'stop')
+4. CHECK    action: 'status' first. If the reader is already on (someone left it on),
+            note it, and turn it off at the end anyway.
+5. TURN ON  android_talkback(action: 'enable') / ios_voiceover(action: 'start')
+6. WALK     First 'previous', repeatedly, until the focus stops moving — the reader
+            often lands mid-screen, and anything above that point (title, toolbar,
+            profile button) is only reached going backwards. Then 'next', repeatedly,
+            to the end. Record every `text` in order. See "End of screen".
+7. CHECK    the transcript — see "What to look for"
+8. ACTIVATE land on a control, then action: 'activate'. Confirm the app actually
+            responded (page source / screenshot). If it opened another screen and you
+            must stay on this one, go back: device_key(BACK) on Android,
+            ios_voiceover(action: 'back') on iOS.
+9. TURN OFF android_talkback(action: 'disable') / ios_voiceover(action: 'stop')
             ALWAYS — on the failure path too.
 ```
 
-**Step 8 is not optional.** While a screen reader is on, a single tap only moves its
+**Sound:** while the reader is on and nobody is watching the device in a browser, the
+device is kept silent automatically — the enable reply says so in `deviceSound`. Nothing
+to do on your side, and the speech is still readable in every reply's `text`.
+
+**Step 9 is not optional.** While a screen reader is on, a single tap only moves its
 focus and a double tap activates. Every later tap, swipe and tap-by-text in the session —
 yours or the next user's on that device — behaves differently until it is turned off.
 
@@ -93,9 +103,11 @@ for each reply — never in a parallel batch.
 
 ## End of screen
 
-- iOS: `text` comes back `null` when VoiceOver did not move — that is the last element.
-- Android: stop when two consecutive `next` replies return the same `text` **and** the
-  same `bounds`.
+- iOS: `text` comes back `null` when VoiceOver did not move — that is the last element
+  (or the first, when walking with `previous`).
+- Android: the reply's `message` says the focus did not move. On older devices that do not
+  say so, stop when two consecutive replies return the same `text` **and** the same
+  `bounds`.
 
 Set yourself a cap (for example 60 moves). A walk that never ends — the same handful of
 items repeating — is itself a finding: a **focus trap**.
@@ -107,7 +119,7 @@ items repeating — is itself a finding: a **focus trap**.
 | Unlabelled control | `text` is only a role ("Button", "Image") or empty, or iOS `(no label)` |
 | Developer string spoken aloud | `text` like `btn_submit`, `ic_close_24`, `imageView3` |
 | Wrong reading order | Order of `text` does not match the visual top-to-bottom, left-to-right order (compare the focus bounds/frames with a screenshot) |
-| Unreachable control | A control visible in the screenshot never appears in the walk |
+| Unreachable control | A control visible in the screenshot never appears in the walk — in EITHER direction. Walk `previous` from the first focus too before reporting this, and ignore listed elements with zero-size bounds: they are off-screen, not unreachable |
 | Focus escapes a dialog | While a modal is open, `next` reaches elements behind it |
 | Focus trap | The walk cycles without reaching the end |
 | Ambiguous duplicates | Several items announce identically ("Edit", "Edit", "Edit") with no context |
