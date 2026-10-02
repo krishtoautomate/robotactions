@@ -178,4 +178,4 @@ framework parity — see the `framework-integration` skill.
 - `references/android.md` — full Android tool map, gestures, hardware keys, app data,
   shell access
 - `references/ios.md` — session lifecycle, label-first interaction, hardware buttons,
-  HID vs automation input, files and diagnostics
+  direct gesture vs automation input, files and diagnostics
