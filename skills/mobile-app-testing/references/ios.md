@@ -114,7 +114,6 @@ ios_settings(udid, ...)
 ios_diagnostics(udid)
 ios_ps(udid)                          running processes
 ios_reboot(udid)
-ios_shell(udid, ...)
 ios_get_pasteboard / ios_set_pasteboard
 ios_clipboard_get_hid / ios_clipboard_set_hid
 ios_contact_hid(udid, ...)
