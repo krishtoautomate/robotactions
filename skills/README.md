@@ -21,7 +21,7 @@ npx skills add https://robotactions.com
 
 Served from our own domain via [RFC 8615](https://www.rfc-editor.org/rfc/rfc8615)
 discovery. Run it without flags and it asks **which skills and which agents** you want —
-you are not signing up for all seven.
+you are not signing up for all eight.
 
 Prefer to choose from the command line:
 
@@ -80,6 +80,7 @@ repo root. Each skill also renders as a page at
 |---|---|
 | [**robotactions-getting-started**](robotactions-getting-started/SKILL.md) | Connect an MCP host to the device cloud, authenticate, verify with a real device, understand device holds and the parallel limit. |
 | [**mobile-app-testing**](mobile-app-testing/SKILL.md) | Drive native Android and iOS apps: install, locate elements without guessing coordinates, type without racing focus, wait properly, assert on what is actually on screen. |
+| [**accessibility-testing**](accessibility-testing/SKILL.md) | Run the platform's own accessibility audit, then walk the real screen reader — TalkBack or VoiceOver — item by item: what is announced, in what order, and whether every control can be reached and activated. |
 | [**web-app-testing**](web-app-testing/SKILL.md) | Test the web on a real device browser or the desktop grid: snapshot-and-ref interaction, verified clicks, page network capture. |
 | [**device-state-setup**](device-state-setup/SKILL.md) | Put the device into the state the test needs: push files so an upload picker has something to pick, seed an app's own container, mock GPS, force a locale, dark mode, clean app state. |
 | [**network-mocking**](network-mocking/SKILL.md) | Capture and mock traffic for native app requests as well as web pages — error, empty, offline and slow-network states without a broken backend. |

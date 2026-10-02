@@ -142,6 +142,7 @@ Claude Code users can install it as a plugin instead, which also registers the M
 |---|---|
 | [robotactions-getting-started](skills/robotactions-getting-started/SKILL.md) | Connect, authenticate, verify, device holds and the parallel limit |
 | [mobile-app-testing](skills/mobile-app-testing/SKILL.md) | Driving native Android and iOS apps on real hardware |
+| [accessibility-testing](skills/accessibility-testing/SKILL.md) | Accessibility audits and walking the real TalkBack / VoiceOver screen reader |
 | [web-app-testing](skills/web-app-testing/SKILL.md) | The web on a real device browser or the desktop grid |
 | [device-state-setup](skills/device-state-setup/SKILL.md) | Files for upload flows, GPS, locale, dark mode, clean app state |
 | [network-mocking](skills/network-mocking/SKILL.md) | Mocking and capturing traffic — native app requests as well as web |
