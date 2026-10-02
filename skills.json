@@ -66,6 +66,27 @@
       "skillUrl": "https://github.com/krishtoautomate/robotactions/blob/main/skills/mobile-app-testing/SKILL.md"
     },
     {
+      "name": "accessibility-testing",
+      "title": "Accessibility testing",
+      "description": "Test a mobile app's accessibility on real devices \u2014 run the platform's own accessibility audit, then drive the real screen reader (TalkBack on Android, VoiceOver on iOS) item by item to check what a blind user hears, in what order, and whether every control can be reached and activated.",
+      "path": "skills/accessibility-testing",
+      "tags": [
+        "accessibility",
+        "a11y",
+        "screen-reader",
+        "talkback",
+        "voiceover"
+      ],
+      "primaryTools": [
+        "android_accessibility_audit",
+        "ios_accessibility_audit",
+        "android_talkback",
+        "ios_voiceover",
+        "ios_voiceover_preview"
+      ],
+      "skillUrl": "https://github.com/krishtoautomate/robotactions/blob/main/skills/accessibility-testing/SKILL.md"
+    },
+    {
       "name": "web-app-testing",
       "title": "Web app testing",
       "description": "Test websites and web apps in the browser of a real Android or iOS device, or in a desktop browser on the grid. Use for mobile web testing, responsive checks on real hardware, page network and console debugging, and request mocking.",
