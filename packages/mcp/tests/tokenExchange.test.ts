@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { exchangeAuth0Token, TokenExchangeError } from '../src/tokenExchange.js';
+import { exchangeAuth0Token } from '../src/tokenExchange.js';
 
 describe('exchangeAuth0Token', () => {
     it('POSTs Authorization Bearer + JSON body to /api/tokens/from-auth0', async () => {
